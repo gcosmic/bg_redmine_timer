@@ -1,0 +1,52 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="stop-watch" attributes="startTS endTS buffer">
+  <template>
+    <link rel="stylesheet" href="stop-watch.css">
+	<div>
+		<h3>{{running?"Running":"Stopped"}}</h3>
+		<span>{{hours}} hours</span> - 
+		<span>{{minutes}} mins</span>
+	</div>
+	<div>
+		<button on-click="{{handleTimer}}">{{running?"Stop":"Start"}}</button>
+	</div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+		ready: function() {
+			this.startTS = 0;
+			this.endTS = 0;
+			this.running = false;
+			this.hours = 0;
+			this.minutes = 0;
+			this.timer = null;
+		},
+		handleTimer : function(){
+			if (this.running){
+				clearInterval(this.timer);
+				//this.hours = this.endTS > 0 ? Math.round(res*100)/100 : 0;
+			} else {
+				this.startTS = new Date().getTime();
+				
+				this.timer = setInterval(function() {
+					var timestamp = new Date().getTime();
+					var res = 0;
+					var tempMins = 0;
+					this.endTS = timestamp;
+					res = (this.endTS - this.startTS)/3600000;
+					this.hours = Math.round(res*100)/100;
+					
+					tempMins = (this.endTS - this.startTS)/60000;
+					this.minutes = Math.round(tempMins*100)/100;
+				}.bind(this), 1000); 
+			}
+			this.running = !this.running;
+		}
+		
+        // define element prototype here
+      });
+    })();
+  </script>
+</polymer-element>
