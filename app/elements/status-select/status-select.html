@@ -1,0 +1,34 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="status-select" attributes="">
+	<template>
+		<link rel="stylesheet" href="status-select.css">
+		
+		
+			<core-dropdown-menu label="Status">
+				<core-dropdown class="dropdown">
+					<core-selector>
+						<template repeat="{{s in statusOpts}}">
+							<core-item label="{{s.status}}"></core-item>
+						</template>
+					</core-selector>
+				</core-dropdown>
+			</core-dropdown-menu>
+		
+	</template>
+  <script>
+    (function () {
+      Polymer({
+        // define element prototype here
+		ready: function(){
+			this.statusOpts = [
+				{id: 101, status: "BGQA"},
+				{id: 102, status: "In progress"},
+				{id: 103, status: "Missing information"},
+				{id: 104, status: "Deployed"}
+			]
+		}
+      });
+    })();
+  </script>
+</polymer-element>

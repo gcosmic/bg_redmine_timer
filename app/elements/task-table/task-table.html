@@ -1,0 +1,73 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="task-table" attributes="">
+  <template>
+    <link rel="stylesheet" href="task-table.css">
+	<table>
+		<thead>
+			<tr>
+				<th></th>
+				<th>Time spent</th>
+				<th>Project</th>
+				<th>Priority</th>
+				<th>Status</th>
+				<th>Issue</th>
+				<th>Comment</th>
+			</tr>
+		</thead>
+		<tbody>
+			<template repeat="{{task in tasks}}">
+				<tr>
+					<td colspan=2>
+						<stop-watch></stop-watch>
+					</td>
+					<td>{{task.project}}</td>
+					<td><div class="{{task.priority}}">{{task.priority}}</div></td>
+					<td>
+						<core-dropdown-menu label="Status">
+							<core-dropdown class="dropdown">
+								<core-selector selected="{{task.status}}">
+									<template repeat="{{s in statusOpts}}">
+										<core-item label="{{s.status}}"></core-item>
+									</template>
+								</core-selector>
+							</core-dropdown>
+						</core-dropdown-menu>
+					</td>
+					<td><a href="#">{{task.issue}}</a></td>
+					<td>
+						<task-comment></task-comment>
+					</td>
+				</tr>
+			</template>
+		</tbody>
+	</table>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        // define element prototype here
+		ready: function(){
+			this.tasks = [
+				{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
+				{project: "Something", priority: "Immediate", status: "BGQA", issue: "#6600 - Create new redmine timer"},
+				{project: "Basd", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
+				{project: "Ricardo", priority: "High", status: "Deployed", issue: "#6600 - Create new redmine timer"},
+			];
+			this.statusOpts = [
+				{status: "New"},
+				{ status: "BGQA"},
+				{status: "In progress"},
+				{status: "Missing information"},
+				{status: "Deployed"}
+			];
+			this.assignees = [
+				{name: "John", id: "123"},
+				{name: "Sean", id: "222"},
+				{name: "Gabe", id: "5555"},
+			];
+		}
+      });
+    })();
+  </script>
+</polymer-element>

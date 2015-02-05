@@ -3,14 +3,13 @@
 <polymer-element name="stop-watch" attributes="startTS endTS buffer">
   <template>
     <link rel="stylesheet" href="stop-watch.css">
-	<div>
-		<h3>{{running?"Running":"Stopped"}}</h3>
-		<span>{{hours}} hours</span> - 
-		<span>{{minutes}} mins</span>
-	</div>
-	<div>
-		<button on-click="{{handleTimer}}">{{running?"Stop":"Start"}}</button>
-	</div>
+	<td colspan=2>
+		<button on-click="{{handleTimer}}" disabled?={{running}}>Play</button>
+		<button on-click="{{handleTimer}}" disabled?={{!running}}>Stop</button>
+		<span id="time">
+			{{hours}}:{{minutes}}:{{seconds}}
+		</span>
+	</td>
   </template>
   <script>
     (function () {
@@ -19,12 +18,19 @@
 			this.startTS = 0;
 			this.endTS = 0;
 			this.running = false;
-			this.hours = 0;
-			this.minutes = 0;
+			this.hours = "00";
+			this.minutes = "00";
+			this.seconds = "00";
 			this.timer = null;
+			this.storedTime = 0;
 		},
 		handleTimer : function(){
+			var res = 0;
+			if (this.storedTime >0){
+				res = this.storedTime;
+			}
 			if (this.running){
+				
 				clearInterval(this.timer);
 				//this.hours = this.endTS > 0 ? Math.round(res*100)/100 : 0;
 			} else {
@@ -32,14 +38,25 @@
 				
 				this.timer = setInterval(function() {
 					var timestamp = new Date().getTime();
-					var res = 0;
-					var tempMins = 0;
-					this.endTS = timestamp;
-					res = (this.endTS - this.startTS)/3600000;
-					this.hours = Math.round(res*100)/100;
 					
-					tempMins = (this.endTS - this.startTS)/60000;
-					this.minutes = Math.round(tempMins*100)/100;
+					var tempHours = 0;
+					var tempMins = 0;
+					var tempSecs = 0;
+					this.endTS = timestamp;
+					
+					
+					
+					
+					tempHours = res/3600000;
+					this.hours = pad((Math.floor(tempHours)%60).toString(),2);
+					
+					tempMins = res/60000;
+					this.minutes = pad((Math.floor(tempMins)%60).toString(),2);
+					
+					tempSecs = res/1000;
+					this.seconds = pad((Math.floor(tempSecs)%60).toString(),2);
+					
+					this.storedTime = res = this.endTS - this.startTS;
 				}.bind(this), 1000); 
 			}
 			this.running = !this.running;
