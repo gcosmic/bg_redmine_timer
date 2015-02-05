@@ -3,46 +3,51 @@
 <polymer-element name="stop-watch" attributes="startTS endTS buffer">
   <template>
     <link rel="stylesheet" href="stop-watch.css">
-	<td colspan=2>
-		<button on-click="{{handleTimer}}" disabled?={{running}}>Play</button>
-		<button on-click="{{handleTimer}}" disabled?={{!running}}>Stop</button>
-		<span id="time">
-			{{hours}}:{{minutes}}:{{seconds}}
-		</span>
-	</td>
+	<button id="play" on-click="{{handleTimer}}" disabled?={{running}}>Play</button>
+	<button id="stop" on-click="{{handleTimer}}" disabled?={{!running}}>Stop</button>
+	<span id="time">
+		{{hours}}:{{minutes}}:{{seconds}}
+	</span>
   </template>
   <script>
     (function () {
       Polymer({
 		ready: function() {
 			this.startTS = 0;
-			this.endTS = 0;
 			this.running = false;
 			this.hours = "00";
 			this.minutes = "00";
 			this.seconds = "00";
 			this.timer = null;
 			this.storedTime = 0;
+			this.resuming = false;
 		},
 		handleTimer : function(){
 			var res = 0;
-			if (this.storedTime >0){
-				res = this.storedTime;
-			}
 			if (this.running){
-				
+				this.resuming =true;
 				clearInterval(this.timer);
 				//this.hours = this.endTS > 0 ? Math.round(res*100)/100 : 0;
 			} else {
-				this.startTS = new Date().getTime();
+				
+				if (this.resuming){
+					this.startTS = new Date(new Date().getTime()-this.storedTime);
+				} else {
+					this.startTS = new Date().getTime();
+				}
+				
+				
+				
 				
 				this.timer = setInterval(function() {
-					var timestamp = new Date().getTime();
+					var now = new Date();
+					now = now.getTime();
 					
 					var tempHours = 0;
 					var tempMins = 0;
 					var tempSecs = 0;
-					this.endTS = timestamp;
+					
+					res = now - this.startTS;
 					
 					
 					
@@ -54,9 +59,10 @@
 					this.minutes = pad((Math.floor(tempMins)%60).toString(),2);
 					
 					tempSecs = res/1000;
-					this.seconds = pad((Math.floor(tempSecs)%60).toString(),2);
+					this.seconds = pad((Math.round(tempSecs)%60).toString(),2);
 					
-					this.storedTime = res = this.endTS - this.startTS;
+					this.storedTime = res;
+					
 				}.bind(this), 1000); 
 			}
 			this.running = !this.running;

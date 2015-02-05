@@ -3,7 +3,71 @@
 }
 table{
 	width:100%;
+	border-collapse:collapse;
 	th{
 		text-align:left;
+		border-right:1px solid #e5e5e5;
+		height:27px;
+		padding-left:9px;
+		
+		&.col-corner{
+			width:100px;
+		}
+		&.col-time{
+			width:145px;
+		}
+		&.col-project{
+			width:291px;
+		}
+		&.col-priority{
+			width:97px;
+		}
+		&.col-status{
+			width:151px;
+		}
+		&.col-issue{
+			width:389px;
+		}
+		&.col-comment{
+			width:212px;
+		}
 	}
+	th:last-child{
+		border-right:none;
+	}
+	td{
+		height:31px;
+		border-bottom:1px solid #e5e5e5;
+		padding-left: 11px;
+		&.prio, &:first-child{
+			padding-left:0;
+		}
+		div{
+			height:31px;
+			line-height:31px;
+			text-align:left;
+			padding-left:12px;
+		}
+		/*Priorities*/
+		div.Low{
+			background:#c8dca7;
+		}
+		div.Normal{
+			background:#91dd1b;
+		}
+		div.High{
+			background:#ffb401;
+		}
+		div.Immediate{
+			background:#cc252c;
+			color:#ffffff;
+		}
+	}
+	tbody tr:first-of-type td{
+		padding-top:20px;
+	}
+	
+	
+	
+	
 }

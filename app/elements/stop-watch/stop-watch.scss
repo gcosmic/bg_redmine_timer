@@ -1,3 +1,25 @@
 :host {
   display: block;
 }
+
+button{
+	width:50px;
+	background:white;
+	border:0 none;
+	color:#494949;
+	font-size:12px;
+	padding-top:6px;
+	padding-bottom:6px;
+	height:31px;
+}
+button#play:disabled{
+	background:#91dd1b;
+}
+button#stop:disabled{
+	background:#cb262c;
+	color:#ffffff;
+}
+
+span#time{
+	padding-left:11px;
+}

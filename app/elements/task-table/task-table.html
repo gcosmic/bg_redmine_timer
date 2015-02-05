@@ -6,13 +6,13 @@
 	<table>
 		<thead>
 			<tr>
-				<th></th>
-				<th>Time spent</th>
-				<th>Project</th>
-				<th>Priority</th>
-				<th>Status</th>
-				<th>Issue</th>
-				<th>Comment</th>
+				<th class="col-corner"></th>
+				<th class="col-time">Time spent</th>
+				<th class="col-project">Project</th>
+				<th class="col-priority">Priority</th>
+				<th class="col-status">Status</th>
+				<th class="col-issue">Issue</th>
+				<th class="col-comment">Comment</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,9 +22,9 @@
 						<stop-watch></stop-watch>
 					</td>
 					<td>{{task.project}}</td>
-					<td><div class="{{task.priority}}">{{task.priority}}</div></td>
+					<td class="prio"><div class="{{task.priority}}">{{task.priority}}</div></td>
 					<td>
-						<core-dropdown-menu label="Status">
+						<!-- <core-dropdown-menu label="Status">
 							<core-dropdown class="dropdown">
 								<core-selector selected="{{task.status}}">
 									<template repeat="{{s in statusOpts}}">
@@ -32,7 +32,8 @@
 									</template>
 								</core-selector>
 							</core-dropdown>
-						</core-dropdown-menu>
+						</core-dropdown-menu> -->
+						{{task.status}}
 					</td>
 					<td><a href="#">{{task.issue}}</a></td>
 					<td>
@@ -53,6 +54,7 @@
 				{project: "Something", priority: "Immediate", status: "BGQA", issue: "#6600 - Create new redmine timer"},
 				{project: "Basd", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
 				{project: "Ricardo", priority: "High", status: "Deployed", issue: "#6600 - Create new redmine timer"},
+				{project: "Ricardo", priority: "Low", status: "Verified", issue: "#6600 - Create new redmine timer"},
 			];
 			this.statusOpts = [
 				{status: "New"},
