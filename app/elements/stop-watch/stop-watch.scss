@@ -4,7 +4,6 @@
 
 button{
 	width:50px;
-	background:white;
 	border:0 none;
 	color:#494949;
 	font-size:12px;
@@ -12,12 +11,17 @@ button{
 	padding-bottom:6px;
 	height:31px;
 }
-button#play:disabled{
+
+.play{
 	background:#91dd1b;
 }
-button#stop:disabled{
+.stop{
 	background:#cb262c;
 	color:#ffffff;
+}
+button:disabled{
+	background:#ffffff;
+	color:#494949;
 }
 
 span#time{

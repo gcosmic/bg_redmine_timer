@@ -1,10 +1,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="stop-watch" attributes="startTS endTS buffer">
+<polymer-element name="stop-watch" attributes="startTS endTS buffer indexRow">
   <template>
     <link rel="stylesheet" href="stop-watch.css">
-	<button id="play" on-click="{{handleTimer}}" disabled?={{running}}>Play</button>
-	<button id="stop" on-click="{{handleTimer}}" disabled?={{!running}}>Stop</button>
+	<button id="play" class="play" on-click="{{handleTimer}}" disabled?={{running}}>Play</button>
+	<button id="stop" class="stop" on-click="{{handleTimer}}" disabled?={{!running}}>Stop</button>
 	<span id="time">
 		{{hours}}:{{minutes}}:{{seconds}}
 	</span>
@@ -21,8 +21,10 @@
 			this.timer = null;
 			this.storedTime = 0;
 			this.resuming = false;
+			
 		},
 		handleTimer : function(){
+			this.fire('highlight', {msg: this.indexRow});
 			var res = 0;
 			if (this.running){
 				this.resuming =true;

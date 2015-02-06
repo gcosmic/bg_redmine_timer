@@ -66,7 +66,9 @@ table{
 	tbody tr:first-of-type td{
 		padding-top:20px;
 	}
-	
+	tr.active{
+		background:#f6f6f6;
+	}
 	
 	
 	
