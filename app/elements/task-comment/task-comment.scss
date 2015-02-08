@@ -1,6 +1,49 @@
+/* Variables */
+
+$normal : #c8dca7;
+$low : #c8dca7;
+$normal : #91dd1b;
+$high : #ffb401;
+$immediate : #cc252c;
+$hold : #f0ffd8;
+
 :host {
   display: block;
 }
 paper-input-decorator{
 	padding:0;
+	#underline{
+		top:2px;
+		.unfocused-underline{
+			background: transparent;
+		}
+	}
+	/*Priorities*/
+			&.low{
+				.focused-underline{
+					background: $low;
+				}
+				
+			}
+			&.normal{
+				.focused-underline{
+					background: $normal;
+				}
+			}
+			&.high{
+				.focused-underline{
+					background: $high;
+				}
+			}
+			&.immediate{
+				.focused-underline{
+					background: $immediate;
+					color:#ffffff;
+				}
+			}
+			&.hold{
+				.focused-underline{
+					background: $hold;
+				}
+			}
 }

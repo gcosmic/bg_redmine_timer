@@ -1,15 +1,30 @@
 :host {
   display: block;
 }
+:host:after{
+	display:table;
+	content:"";
+	clear:both;
+}
 
-button{
+paper-button{
 	width:50px;
 	border:0 none;
 	color:#494949;
 	font-size:12px;
+	margin:0;
+	height:31px;
+	border-radius:0;
+	float:left;
+	box-sizing:border-box;
+	min-width:0;
+}
+paper-button .button-content{
+	width:50px;
+	height:31px;
 	padding-top:6px;
 	padding-bottom:6px;
-	height:31px;
+	box-sizing:border-box;
 }
 
 .play{
@@ -19,11 +34,34 @@ button{
 	background:#cb262c;
 	color:#ffffff;
 }
-button:disabled{
-	background:#ffffff;
-	color:#494949;
+
+
+div.time{
+	margin-left:11px;
+	float:left;
+	height:100%;
+	line-height:31px;
 }
 
-span#time{
-	padding-left:11px;
-}
+core-field{
+		font-size:12px;
+		margin-top:2px;
+	}
+	core-field input{
+		height:25px;
+		background:#ffffff;
+		border:1px solid #555;
+		font-size:inherit;
+		text-align:right;
+		padding-left:8px;
+		padding-right:8px;
+		width:50px;
+	}
+	
+/*Dark theme*/
+:host-context(.dark) {
+	paper-button[disabled]{
+		background:#555555;
+	}
+ }
+	

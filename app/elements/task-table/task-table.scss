@@ -1,35 +1,61 @@
+/* Variables */
+
+$normal : #c8dca7;
+$low : #c8dca7;
+$normal : #91dd1b;
+$high : #ffb401;
+$immediate : #cc252c;
+$hold : #f0ffd8;
+
+$darkHighLight: #333333;
+$darkRowBorders: #444444;
+$darkFontColor: #eeeeee;
+$darkPriorities : #000000;
+
 :host {
   display: block;
 }
 table{
+	margin-top:10px;
 	width:100%;
 	border-collapse:collapse;
+	border-spacing:0;
+	table-layout:fixed;
 	th{
 		text-align:left;
-		border-right:1px solid #e5e5e5;
-		height:27px;
 		padding-left:9px;
-		
+		padding-bottom:20px;
+		div.th-container{
+			border-right:1px solid #e5e5e5;
+			height:27px;
+		}
 		&.col-corner{
 			width:100px;
+			width:(100/1359)*100%;
 		}
 		&.col-time{
 			width:145px;
+			width:(145/1359)*100%;
 		}
 		&.col-project{
 			width:291px;
+			width:(291/1359)*100%;
 		}
 		&.col-priority{
 			width:97px;
+			width:(97/1359)*100%;
 		}
 		&.col-status{
 			width:151px;
+			width:(151/1359)*100%;
 		}
 		&.col-issue{
 			width:389px;
+			width:(389/1359)*100%;
 		}
 		&.col-comment{
 			width:212px;
+			width:(212/1359)*100%;
 		}
 	}
 	th:last-child{
@@ -38,34 +64,45 @@ table{
 	td{
 		height:31px;
 		border-bottom:1px solid #e5e5e5;
-		padding-left: 11px;
-		&.prio, &:first-child{
+		padding: 0 5px 0 11px;
+		white-space:nowrap;
+		text-overflow:ellipsis;
+		overflow:hidden;
+		&:first-child{
 			padding-left:0;
 		}
-		div{
+		
+		&.prio div{
+			padding-left:0;
 			height:31px;
 			line-height:31px;
 			text-align:left;
 			padding-left:12px;
+			/*Priorities*/
+			&.low{
+				background: $low;
+			}
+			&.normal{
+				background: $normal;
+			}
+			&.high{
+				background: $high;
+			}
+			&.immediate{
+				background: $immediate;
+				color:#ffffff;
+			}
+			&.hold{
+				background: $hold;
+			}
 		}
-		/*Priorities*/
-		div.Low{
-			background:#c8dca7;
-		}
-		div.Normal{
-			background:#91dd1b;
-		}
-		div.High{
-			background:#ffb401;
-		}
-		div.Immediate{
-			background:#cc252c;
-			color:#ffffff;
-		}
+		
+		
 	}
-	tbody tr:first-of-type td{
-		padding-top:20px;
+	tr{
+		cursor:pointer;
 	}
+	
 	tr.active{
 		background:#f6f6f6;
 	}
@@ -73,3 +110,24 @@ table{
 	
 	
 }
+/*Dark theme*/
+:host-context(.dark) { 
+	table{
+		td{
+			border-bottom-color: $darkRowBorders;
+			&.prio div{
+				color: $darkPriorities;
+			}
+		}
+		th{
+			div.th-container{
+				border-right-color: $darkRowBorders;
+			}
+		}
+		tr.active{
+			background:$darkHighLight;
+		}
+	}
+
+}
+ 

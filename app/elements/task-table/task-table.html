@@ -6,23 +6,23 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="col-corner"></th>
-				<th class="col-time">Time spent</th>
-				<th class="col-project">Project</th>
-				<th class="col-priority">Priority</th>
-				<th class="col-status">Status</th>
-				<th class="col-issue">Issue</th>
-				<th class="col-comment">Comment</th>
+				<th class="col-corner"><div class="th-container"></div></th>
+				<th class="col-time"><div class="th-container">Time spent</div></th>
+				<th class="col-project"><div class="th-container">Project</div></th> 
+				<th class="col-priority"><div class="th-container">Priority</div></th> 
+				<th class="col-status"><div class="th-container">Status</div></th>
+				<th class="col-issue"><div class="th-container">Issue</div></th>
+				<th class="col-comment"><div class="th-container">Comment</div></th>
 			</tr>
 		</thead>
 		<tbody id="tbody">
 			<template repeat="{{task, ind in tasks}}">
-				<tr>
+				<tr on-active-timer="{{highlight}}" on-click="{{seeTaskDetails}}" taskInd="{{ind}}">
 					<td colspan=2>
-						<stop-watch on-highlight="{{highlight}}" indexRow="{{ind}}"></stop-watch>
+						<stop-watch indexRow="{{ind}}"></stop-watch>
 					</td>
 					<td>{{task.project}}</td>
-					<td class="prio"><div class="{{task.priority}}">{{task.priority}}</div></td>
+					<td class="prio"><div class="{{task.priorityClass}}">{{task.priority}}</div></td>
 					<td>
 						<!-- <core-dropdown-menu label="Status">
 							<core-dropdown class="dropdown">
@@ -35,9 +35,9 @@
 						</core-dropdown-menu> -->
 						{{task.status}}
 					</td>
-					<td><a href="#">{{task.issue}}</a></td>
+					<td><a href="http://www.google.com" on-click="{{handleLink}}">{{task.issue}}</a></td>
 					<td>
-						<task-comment></task-comment>
+						<task-comment priority="{{task.priorityClass}}"></task-comment>
 					</td>
 				</tr>
 			</template>
@@ -50,11 +50,15 @@
         // define element prototype here
 		ready: function(){
 			this.tasks = [
-				{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
-				{project: "Something", priority: "Immediate", status: "BGQA", issue: "#6600 - Create new redmine timer"},
-				{project: "Basd", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
-				{project: "Ricardo", priority: "High", status: "Deployed", issue: "#6600 - Create new redmine timer"},
-				{project: "Ricardo", priority: "Low", status: "Verified", issue: "#6600 - Create new redmine timer"}
+				{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer", assignee: "3"},
+				{project: "Something", priority: "Immediate", status: "BGQA", issue: "#6600 - Create new redmine timer", assignee: "3"},
+				{project: "Something Something Something Something Something Something Something Something Something Something Something Something Something Something", priority: "Hold", status: "BGQA", issue: "#6600 - Create new redmine timer Create new redmine timer Create new redmine timer Create new redmine timer",
+				assignee: "3"},
+				{project: "Basd", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer", assignee:"3"},
+				{project: "Ricardo", priority: "High", status: "Deployed", issue: "#6600 - Create new redmine timer",
+				assignee:"3"},
+				{project: "Ricardo", priority: "Low", status: "Verified", issue: "#6600 - Create new redmine timer",
+				assignee:"3"}
 			];
 			this.statusOpts = [
 				{status: "New"},
@@ -66,14 +70,39 @@
 			this.assignees = [
 				{name: "John", id: "123"},
 				{name: "Sean", id: "222"},
-				{name: "Gabe", id: "5555"},
+				{name: "Gabe", id: "5555"}
 			];
 			
+			
+			//Transform task properties
+			for (var i=0;i<this.tasks.length;i++){
+				for (var key in this.tasks[i]){
+					if (key ==="priority"){
+						this.tasks[i]["priorityClass"] = this.tasks[i][key].toLowerCase();
+					}
+					if (key ==="project" || key ==="issue"){
+						//this.tasks[i][key] = this.tasks[i][key]
+					}
+				}
+			}
+			
 		},
-		highlight: function(e,detail){
-			var row = this.$.tbody.children[detail.msg+1];
-			row.className = row.className===""? "active" : "";
+		highlight : function(e,detail,sender){
+			sender.className = detail.active ? "active" : "";
+		},
+		seeTaskDetails : function(e,detail,sender){
+			if (e.button ===0){
+				var taskObj = e.target.templateInstance.model.task;
+				this.fire('see-task-details', {taskRow : sender, task : taskObj });
+			}
+			
+		},
+		handleLink : function(e,detail,sender){
+			
+			e.stopPropagation();
+			return false;
 		}
+		
 		
       });
     })();

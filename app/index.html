@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>yo_polymer_demo</title>
+    <title>Redmine Timer Baby</title>
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     <!-- build:css styles/main.css -->
@@ -19,13 +19,80 @@
     <link rel="import" href="elements/elements.html">
     <!-- endbuild-->
   </head>
-  <body unresolved>
+  <body unresolved class="">
    <!--  <div class="hero-unit">
       <yo-greeting></yo-greeting>
       <p>You now have</p>
       <yo-list></yo-list>
     </div> -->
-	<task-table></task-table>
+	<div class="topBar">
+		<core-field>
+		  <core-icon icon="lock"></core-icon>
+		  <input placeholder="API Key">
+		  <paper-button>Save</paper-button>
+		  <div flex></div>
+		  
+		  <paper-button id="blackTheme"><core-icon icon="invert-colors"></core-icon></paper-button>
+		  
+		</core-field>
+	</div>
+	<div class="mainWrap">
+		<div class="projectTab">
+			<paper-button start-justified layout horizontal>
+				Ricardo
+				<core-icon icon="expand-more" id="tabIcon"></core-icon-button>
+			</paper-button>
+		</div>
+		<core-collapse id="collapse" opened>
+		  <task-table></task-table>
+		</core-collapse>
+	</div>
+	
+	<paper-toast id="toastTimerStarted" text="Timer Started!"></paper-toast>
+	<paper-toast id="toastInvalidTimeInput">
+		<core-icon icon="thumb-down" layout horizontal start-justified></core-icon>
+	</paper-toast>
+	
+	<paper-toast id="toastTaskSubmited" text="Task updated!" autoCloseDisabled></paper-toast>
+	
+	
+	<paper-action-dialog transition="core-transition-center" id="dialog" autoCloseDisabled backdrop heading="Task Details">
+	  <core-item label="Project" class="taskProject">
+		<div flex></div>
+		<div class="itemContent"></div>
+	  </core-item>
+	  <core-item label="Issue" class="taskIssue">
+		<div flex></div>
+		<div class="itemContent"></div>
+	  </core-item>
+	  <core-item label="Priority" class="taskPriority">
+		<div flex></div>
+		<div class="itemContent"></div>
+	  </core-item>
+	  <core-item label="Status" class="taskStatus">
+			<div flex></div>
+			<div class="itemContent">
+				<select name="" id="taskDetailStatus"></select>
+			</div>
+	  </core-item>
+	   <core-item label="Assignee" class="taskAssignee">
+			<div flex></div>
+			<div class="itemContent">
+				<select name="" id="taskDetailAssignee"></select>
+			</div>
+	  </core-item>
+	   <core-item label="Comment" class="taskComment">
+			
+			<div class="itemContent" flex>
+				<textarea name="" id="taskComment"></textarea>
+			</div>
+	  </core-item>
+	 
+	  <paper-button dismissive>Cancel</paper-button>
+	  
+	  <paper-button affirmative id="taskSubmit">Submit</paper-button>
+	</paper-action-dialog>
+
 
     <!-- build:js scripts/app.js -->
     <script src="scripts/app.js"></script>

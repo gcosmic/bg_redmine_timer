@@ -1,16 +1,20 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="task-comment" attributes="">
+<polymer-element name="task-comment" attributes="priority">
   <template>
     <link rel="stylesheet" href="task-comment.css">
-	<paper-input-decorator id="paper1" label="...">
-		<input type="text"/>
+	<paper-input-decorator id="paper1" label="..." class="{{priority}}" on-click="{{inputClick}}">
+		<input type="text" id="commentText"/>
 	</paper-input-decorator>
 	<!-- <input type="text" id="comment" /> -->
   </template>
   <script>
     (function () {
       Polymer({
+		inputClick: function(e){
+			e.stopPropagation();
+			return false;
+		}
         // define element prototype here
       });
     })();

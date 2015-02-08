@@ -3,11 +3,20 @@
 <polymer-element name="stop-watch" attributes="startTS endTS buffer indexRow">
   <template>
     <link rel="stylesheet" href="stop-watch.css">
-	<button id="play" class="play" on-click="{{handleTimer}}" disabled?={{running}}>Play</button>
-	<button id="stop" class="stop" on-click="{{handleTimer}}" disabled?={{!running}}>Stop</button>
-	<span id="time">
+	<paper-button id="play" class="play" on-click="{{handleTimer}}" disabled?={{running}}>Play</paper-button>
+	<paper-button id="stop" class="stop" on-click="{{handleTimer}}" disabled?={{!running}}>Stop</paper-button>
+	<div class="time">
 		{{hours}}:{{minutes}}:{{seconds}}
-	</span>
+	</div>
+	<div class="time">
+		<core-field>
+			
+				 <input placeholder="0.0" type="text" id="hoursNumericField" value="{{hoursNumeric}}" on-blur="{{handleBlur}}" on-keyup="{{handleKeypress}}" on-click="{{handleFieldClick}}" pattern="^([0-9]+)(([\.,]{1})?([0-9]+))?$" maxlength=5 />
+			
+		 
+		</core-field>
+	</div>
+	
   </template>
   <script>
     (function () {
@@ -21,10 +30,10 @@
 			this.timer = null;
 			this.storedTime = 0;
 			this.resuming = false;
-			
+			this.hoursNumeric = "";
+			this.manualEntry = false;
 		},
-		handleTimer : function(){
-			this.fire('highlight', {msg: this.indexRow});
+		handleTimer : function(e){
 			var res = 0;
 			if (this.running){
 				this.resuming =true;
@@ -32,6 +41,7 @@
 				//this.hours = this.endTS > 0 ? Math.round(res*100)/100 : 0;
 			} else {
 				
+			
 				if (this.resuming){
 					this.startTS = new Date(new Date().getTime()-this.storedTime);
 				} else {
@@ -51,11 +61,10 @@
 					
 					res = now - this.startTS;
 					
-					
-					
-					
 					tempHours = res/3600000;
-					this.hours = pad((Math.floor(tempHours)%60).toString(),2);
+					//this.hours = pad((Math.floor(tempHours)%100).toString(),2);
+					this.hours = Math.floor(tempHours) >= 99 ? "99" : pad((Math.floor(tempHours)).toString(),2);
+					this.hoursNumeric = Math.round(tempHours*1000)/1000;
 					
 					tempMins = res/60000;
 					this.minutes = pad((Math.floor(tempMins)%60).toString(),2);
@@ -63,11 +72,52 @@
 					tempSecs = res/1000;
 					this.seconds = pad((Math.round(tempSecs)%60).toString(),2);
 					
+					//window.document.title = ""+this.hours+":"+this.minutes+":"+this.seconds;
 					this.storedTime = res;
 					
 				}.bind(this), 1000); 
 			}
 			this.running = !this.running;
+			
+			var toastMsg = new Date();
+			toastMsg = toastMsg.getHours()+":"+pad(toastMsg.getMinutes(),2)+":"+pad(toastMsg.getSeconds(),2);
+			this.fire('active-timer', {active: this.running,showToast: this.resuming ,msg: toastMsg });
+			
+			e.stopPropagation();
+			
+		},
+		handleKeypress: function(e, detail, sender){
+			
+			this.running = false;
+			this.resuming = true;
+			clearInterval(this.timer);
+			this.manualEntry = true;
+			//this.fire('active-timer', {active: this.running, time: new Date().toUTCString() });
+	
+			//Preview time!
+			sender.value = sender.value.trim();
+			if (sender.value===""){
+				return false;
+			}
+			if (!/^([0-9]+)(([\.,]{1})?([0-9]+))?$/.test(sender.value)){
+				this.storedTime = 0;
+				this.hours = this.minutes = this.seconds = "00";
+				//this.fire('invalid-time-input', {msg: "blow me" });
+				return false;
+			} else {
+				this.storedTime = parseFloat(sender.value)*3600000;
+				this.hours = Math.floor(sender.value) >= 99 ? "99" : pad((Math.floor(sender.value)).toString(),2);
+				this.minutes = pad((Math.floor((this.storedTime/60000))%60).toString(),2);
+				this.seconds = pad((Math.round((this.storedTime/1000))%60).toString(),2);
+			}
+			
+		},
+		handleBlur : function(e, detail, sender){
+			this.storedTime = parseFloat(sender.value)*3600000;
+		},
+		handleFieldClick: function(e,detail,sender){
+			sender.setSelectionRange(0, sender.value.length);
+			e.stopPropagation();
 		}
 		
         // define element prototype here
