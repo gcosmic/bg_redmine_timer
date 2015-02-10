@@ -9,10 +9,13 @@
 
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+	<link rel="stylesheet" href="styles/pikaday.css">
     <!-- endbuild-->
 
     <!-- build:js bower_components/webcomponentsjs/webcomponents.min.js -->
+	<script type="text/javascript" src="scripts/pikaday.js"></script>
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+	
     <!-- endbuild -->
 
     <!-- build:vulcanized elements/elements.vulcanized.html -->
@@ -80,6 +83,15 @@
 			<div class="itemContent">
 				<select name="" id="taskDetailAssignee"></select>
 			</div>
+	  </core-item>
+	   <core-item label="Date" class="taskDate">
+			<div flex></div>
+			<div class="itemContent">
+				<input type="text" id="logDate" />
+			</div>
+			
+				<core-icon-button icon="today" id="datepicker-button" ></core-icon-button>
+			
 	  </core-item>
 	   <core-item label="Comment" class="taskComment">
 			

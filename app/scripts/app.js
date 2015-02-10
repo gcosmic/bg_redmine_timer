@@ -23,6 +23,14 @@
 		// });
 	// }
 	
+	
+	var datePicker = new Pikaday(
+    {
+        field: document.getElementById('logDate'),
+        //position: 'bottom right'
+		trigger: document.getElementById('datepicker-button')
+    });
+	
 	var availableStatus = {
 		1: "New",
 		2: "BGQA",
