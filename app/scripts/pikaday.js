@@ -500,17 +500,22 @@
 
         self._onClick = function(e)
         {
-            e = e || window.event;
 			
-            var target = e.target || e.srcElement,
+            e = e || window.event;
+			e.stopPropagation();
+            var target = e.target || e.originalTarget || e.srcElement,
                 pEl = target;
+			var myTarget = 	target.templateInstance.model;
+			
+			
             if (!target) {
+				
                 return;
             }
-			if (target !== opts.trigger && pEl !== opts.trigger){
-				target = target.querySelector("#datepicker-button");
-				pEl = pEl.querySelector("#datepicker-button");
-			}
+			// if (target !== opts.trigger && pEl !== opts.trigger){
+				// target = target.querySelector("#datepicker-button");
+				// pEl = pEl.querySelector("#datepicker-log");
+			// }
             if (!hasEventListeners && hasClass(target, 'pika-select')) {
                 if (!target.onchange) {
                     target.setAttribute('onchange', 'return;');
@@ -523,10 +528,10 @@
                 }
             }
             while ((pEl = pEl.parentNode));
-            if (self._v && target !== opts.trigger && pEl !== opts.trigger) {
-                self.hide();
+            if (self._v && target !== opts.trigger && pEl !== opts.trigger && e.originalTarget !== opts.trigger ) {
+				console.log("fuck");
+                //self.hide();
             }
-			return false;
         };
 
         self.el = document.createElement('div');
@@ -993,7 +998,6 @@
 
         hide: function()
         {
-			console.log("hiding");
             var v = this._v;
             if (v !== false) {
                 if (this._o.bound) {

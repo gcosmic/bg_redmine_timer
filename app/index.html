@@ -28,36 +28,84 @@
       <p>You now have</p>
       <yo-list></yo-list>
     </div> -->
-	<div class="topBar">
-		<core-field>
-		  <core-icon icon="lock"></core-icon>
-		  <input placeholder="API Key">
-		  <paper-button>Save</paper-button>
-		  <div flex></div>
-		  
-		  <paper-button id="blackTheme"><core-icon icon="invert-colors"></core-icon></paper-button>
-		  
-		</core-field>
-	</div>
-	<div class="mainWrap">
-		<div class="projectTab">
-			<paper-button start-justified layout horizontal>
-				Ricardo
-				<core-icon icon="expand-more" id="tabIcon"></core-icon-button>
-			</paper-button>
+	<core-drawer-panel rightDrawer forceNarrow id="taskDrawer" disableSwipe disableEdgeSwipe>
+	  <div drawer>  <core-item label="Project" class="taskProject">
+		
+		<div class="itemContent" ></div>
+	  </core-item>
+	  <core-item label="Issue" class="taskIssue">
+		
+		<div class="itemContent" ></div>
+	  </core-item>
+	  <core-item label="Priority" class="taskPriority">
+		
+		<div class="itemContent" ></div>
+	  </core-item>
+	  <core-item label="Status" class="taskStatus">
+			
+			<div class="itemContent" >
+				<select name="" id="taskDetailStatus"></select>
+			</div>
+	  </core-item>
+	   <core-item label="Assignee" class="taskAssignee">
+			
+			<div class="itemContent" >
+				<select name="" id="taskDetailAssignee"></select>
+			</div>
+	  </core-item>
+	   <core-item label="Date" class="taskDate" end-justified>
+			
+			<div class="itemContent">
+				<input type="text" id="logDate" />
+				<core-icon-button icon="today" id="datepicker-button" ></core-icon-button>
+			</div>
+			
+				
+			
+	  </core-item>
+	   <core-item label="Comment" class="taskComment">
+			
+			<div class="itemContent" >
+				<textarea name="" id="taskComment"></textarea>
+			</div>
+	  </core-item>
+	  </div>
+	  <div main>
+			<div class="topBar">
+			<core-field>
+			  <core-icon icon="lock"></core-icon>
+			  <input placeholder="API Key">
+			  <paper-button>Save</paper-button>
+			  <div flex></div>
+			  
+			  <paper-button id="blackTheme"><core-icon icon="invert-colors"></core-icon></paper-button>
+			  
+			</core-field>
 		</div>
-		<core-collapse id="collapse" opened>
-		  <task-table></task-table>
-		</core-collapse>
-	</div>
-	
+		<div class="mainWrap">
+			<div class="projectTab">
+				<paper-button start-justified layout horizontal>
+					Ricardo
+					<core-icon icon="expand-more" id="tabIcon"></core-icon-button>
+				</paper-button>
+			</div>
+			<core-collapse id="collapse" opened>
+			  <task-table></task-table>
+			</core-collapse>
+		</div>
+		
+		
+	  </div>
+	</core-drawer-panel>
+
 	<paper-toast id="toastTimerStarted" text="Timer Started!"></paper-toast>
 	<paper-toast id="toastInvalidTimeInput">
 		<core-icon icon="thumb-down" layout horizontal start-justified></core-icon>
 	</paper-toast>
 	
 	<paper-toast id="toastTaskSubmited" text="Task updated!" autoCloseDisabled></paper-toast>
-	
+		
+		
 	
 	<paper-action-dialog transition="core-transition-center" id="dialog" autoCloseDisabled backdrop heading="Task Details">
 	  <core-item label="Project" class="taskProject">

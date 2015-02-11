@@ -40,7 +40,7 @@
 		6: "In Progress"
 	};
 	
-	var dialogStatus = query("#dialog .taskStatus .itemContent #taskDetailStatus");
+	var dialogStatus = query("#taskDrawer .taskStatus .itemContent #taskDetailStatus");
 	for (var i in availableStatus){
 		var el = document.createElement("OPTION");
 		el.text = availableStatus[i];
@@ -56,7 +56,7 @@
 		4: "Employee 4",
 		5: "Employee 5"
 	};
-	var dialogAssignees = query("#dialog .taskAssignee .itemContent #taskDetailAssignee");
+	var dialogAssignees = query("#taskDrawer .taskAssignee .itemContent #taskDetailAssignee");
 	for (var i in availableAssignees){
 		var el = document.createElement("OPTION");
 		el.text = availableAssignees[i];
@@ -66,7 +66,7 @@
 	}
 	var successToast = query("#toastTaskSubmited");
 	
-	var taskDialog = query("#dialog");
+	var taskDialog = document.getElementById("dialog");
 	
 	var bodyTheme = "";
 	
@@ -94,23 +94,54 @@
 	});
 	
 	query("task-table").addEventListener("see-task-details", function(msg){
-		var taskProject = query("#dialog .taskProject .itemContent"),
-		taskIssue = query("#dialog .taskIssue .itemContent"),
-		taskPriority = query("#dialog .taskPriority .itemContent"),
-		taskStatus = query("#dialog .taskStatus .itemContent #taskDetailStatus"),
-		taskAssignee = query("#dialog .taskAssignee .itemContent #taskDetailAssignee"),
-		taskComment = query("#dialog #taskComment");
+		// var taskProject = query("#dialog .taskProject .itemContent"),
+		// taskIssue = query("#dialog .taskIssue .itemContent"),
+		// taskPriority = query("#dialog .taskPriority .itemContent"),
+		// taskStatus = query("#dialog .taskStatus .itemContent #taskDetailStatus"),
+		// taskAssignee = query("#dialog .taskAssignee .itemContent #taskDetailAssignee"),
+		// taskComment = query("#dialog #taskComment");
+		 
+		// taskProject.innerHTML = msg.detail.task.project;
+		// taskIssue.innerHTML = msg.detail.task.issue;
+		// taskPriority.innerHTML = msg.detail.task.priority;
+		// var selectOptions = queryAll("#dialog .taskStatus .itemContent #taskDetailStatus option");
+		// for (var i=0;i<selectOptions.length;i++){
+			// if (selectOptions[i].text===msg.detail.task.status){
+				// selectOptions[i].selected = "selected" || true;
+			// }
+		// }
+		// var assigneeOptions = queryAll("#dialog .taskAssignee .itemContent #taskDetailAssignee option");
+		// assigneeOptions[msg.detail.task.assignee-1].selected = "selected" || true;
+		
+		// //var enteredComment = msg.detail.taskRow.querySelector("task-comment").querySelector("input");
+		// var enteredComment = msg.detail.taskRow.getElementsByTagName("task-comment")[0].$.commentText.value;
+		// taskComment.value = enteredComment || "";
+		
+		// successToast.text = "Task "+msg.detail.task.issue+" updated!";
+		// //{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
+		// query("#dialog #taskSubmit").disabled= false;
+		// query("#dialog #taskSubmit").textContent = "Submit";
+		// taskDialog.open();
+		
+		/* dialog box ^-*/
+		
+		var taskProject = query("#taskDrawer .taskProject .itemContent"),
+		taskIssue = query("#taskDrawer .taskIssue .itemContent"),
+		taskPriority = query("#taskDrawer .taskPriority .itemContent"),
+		taskStatus = query("#taskDrawer .taskStatus .itemContent #taskDetailStatus"),
+		taskAssignee = query("#taskDrawer .taskAssignee .itemContent #taskDetailAssignee"),
+		taskComment = query("#taskDrawer #taskComment");
 		 
 		taskProject.innerHTML = msg.detail.task.project;
 		taskIssue.innerHTML = msg.detail.task.issue;
 		taskPriority.innerHTML = msg.detail.task.priority;
-		var selectOptions = queryAll("#dialog .taskStatus .itemContent #taskDetailStatus option");
+		var selectOptions = queryAll("#taskDrawer .taskStatus .itemContent #taskDetailStatus option");
 		for (var i=0;i<selectOptions.length;i++){
 			if (selectOptions[i].text===msg.detail.task.status){
 				selectOptions[i].selected = "selected" || true;
 			}
 		}
-		var assigneeOptions = queryAll("#dialog .taskAssignee .itemContent #taskDetailAssignee option");
+		var assigneeOptions = queryAll("#taskDrawer .taskAssignee .itemContent #taskDetailAssignee option");
 		assigneeOptions[msg.detail.task.assignee-1].selected = "selected" || true;
 		
 		//var enteredComment = msg.detail.taskRow.querySelector("task-comment").querySelector("input");
@@ -118,10 +149,11 @@
 		taskComment.value = enteredComment || "";
 		
 		successToast.text = "Task "+msg.detail.task.issue+" updated!";
-		//{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
-		query("#dialog #taskSubmit").disabled= false;
-		query("#dialog #taskSubmit").textContent = "Submit";
-		taskDialog.open();
+		// //{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
+		// query("#drawer #taskSubmit").disabled= false;
+		// query("#drawer #taskSubmit").textContent = "Submit";
+		
+		query("core-drawer-panel").openDrawer();
 	});
 	
 	query("#dialog #taskSubmit").addEventListener("mousedown", function(e){

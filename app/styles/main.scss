@@ -108,6 +108,34 @@ paper-action-dialog paper-button{
 	}
 }
 
+core-drawer-panel #drawer{
+	background:#ffffff;
+	core-item{
+		padding-left:10px;
+		padding-right:10px;
+		#label{
+			width:75px;
+		}
+		.itemContent{
+			width:160px;
+			overflow:hidden;
+			text-overflow:ellipsis;
+			white-space:nowrap;
+			input{
+				width:90px;
+			}
+			textarea{
+				resize:vertical;
+				min-height:200px;
+				font-family:"RobotoDraft",sans-serif;
+			}
+		}
+		&.taskDate{
+			
+		}
+	}
+}
+
 /*Dark theme*/
 
 $darkFontColor: #eeeeee;
@@ -124,4 +152,35 @@ body.dark {
 			background: #555555;
 		}
 	}
+	
+	core-drawer-panel #drawer{
+	background:#333;
+	core-item{
+		padding-left:10px;
+		padding-right:10px;
+		#label{
+			width:75px;
+		}
+		.itemContent{
+			width:160px;
+			overflow:hidden;
+			text-overflow:ellipsis;
+			white-space:nowrap;
+			input{
+				width:90px;
+			}
+			textarea{
+				resize:vertical;
+				min-height:200px;
+			}
+		}
+		&.taskDate{
+			
+		}
+	}
 }
+	
+}
+
+
+
