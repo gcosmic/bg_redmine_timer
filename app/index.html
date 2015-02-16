@@ -9,6 +9,7 @@
 
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+	<link rel="stylesheet" href="styles/paper-spinner.css">
 	<link rel="stylesheet" href="styles/pikaday.css">
     <!-- endbuild-->
 
@@ -17,7 +18,7 @@
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 	
     <!-- endbuild -->
-
+	<script src="scripts/sample_tasks.js"></script>
     <!-- build:vulcanized elements/elements.vulcanized.html -->
     <link rel="import" href="elements/elements.html">
     <!-- endbuild-->
@@ -28,75 +29,7 @@
       <p>You now have</p>
       <yo-list></yo-list>
     </div> -->
-	<core-drawer-panel rightDrawer forceNarrow id="taskDrawer" disableSwipe disableEdgeSwipe>
-	  <div drawer>  <core-item label="Project" class="taskProject">
-		
-		<div class="itemContent" ></div>
-	  </core-item>
-	  <core-item label="Issue" class="taskIssue">
-		
-		<div class="itemContent" ></div>
-	  </core-item>
-	  <core-item label="Priority" class="taskPriority">
-		
-		<div class="itemContent" ></div>
-	  </core-item>
-	  <core-item label="Status" class="taskStatus">
-			
-			<div class="itemContent" >
-				<select name="" id="taskDetailStatus"></select>
-			</div>
-	  </core-item>
-	   <core-item label="Assignee" class="taskAssignee">
-			
-			<div class="itemContent" >
-				<select name="" id="taskDetailAssignee"></select>
-			</div>
-	  </core-item>
-	   <core-item label="Date" class="taskDate" end-justified>
-			
-			<div class="itemContent">
-				<input type="text" id="logDate" />
-				<core-icon-button icon="today" id="datepicker-button" ></core-icon-button>
-			</div>
-			
-				
-			
-	  </core-item>
-	   <core-item label="Comment" class="taskComment">
-			
-			<div class="itemContent" >
-				<textarea name="" id="taskComment"></textarea>
-			</div>
-	  </core-item>
-	  </div>
-	  <div main>
-			<div class="topBar">
-			<core-field>
-			  <core-icon icon="lock"></core-icon>
-			  <input placeholder="API Key">
-			  <paper-button>Save</paper-button>
-			  <div flex></div>
-			  
-			  <paper-button id="blackTheme"><core-icon icon="invert-colors"></core-icon></paper-button>
-			  
-			</core-field>
-		</div>
-		<div class="mainWrap">
-			<div class="projectTab">
-				<paper-button start-justified layout horizontal>
-					Ricardo
-					<core-icon icon="expand-more" id="tabIcon"></core-icon-button>
-				</paper-button>
-			</div>
-			<core-collapse id="collapse" opened>
-			  <task-table></task-table>
-			</core-collapse>
-		</div>
-		
-		
-	  </div>
-	</core-drawer-panel>
+	<task-table class=""></task-table>
 
 	<paper-toast id="toastTimerStarted" text="Timer Started!"></paper-toast>
 	<paper-toast id="toastInvalidTimeInput">
@@ -135,7 +68,9 @@
 	   <core-item label="Date" class="taskDate">
 			<div flex></div>
 			<div class="itemContent">
-				<input type="text" id="logDate" />
+				<span class="textToday">Today</span>
+				<span hidden><input type="text" id="logDate" /></span>
+				
 			</div>
 			
 				<core-icon-button icon="today" id="datepicker-button" ></core-icon-button>
@@ -155,6 +90,7 @@
 
 
     <!-- build:js scripts/app.js -->
+	
     <script src="scripts/app.js"></script>
     <!-- endbuild-->
   </body>

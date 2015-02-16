@@ -6,6 +6,50 @@
 	  n = n + '';
 	  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 	}
+	window.toCamelCase = function (str) {
+		str = str || false;
+		if (typeof str !== "string") { return false; }
+		var res = str;
+		if (/^.*\-.*$/.test(res)) {
+			var arrStr = str.split("-");
+			res = "";
+			var word = "";
+			for (var i = 0; i < arrStr.length; i++) {
+				word = arrStr[i];
+				if (i > 0) {
+					word = arrStr[i].slice(0, 1).toUpperCase() + arrStr[i].slice(1);
+				}
+				res = res + word;
+			}
+		}
+		return res;
+	};
+	window.getCSS = function(el, prop) {
+		if (!el || !prop || typeof prop !== "string") {
+			return null;
+		}
+		el = typeof el === "string"?document.querySelector(el):el;
+		var cssValue = "";
+		try {
+			cssValue = window.getComputedStyle ? (window.getComputedStyle(el).getPropertyValue(prop)) : (el.currentStyle ? el.currentStyle[toCamelCase(prop)] : "");
+		   
+		}
+		catch(e){}
+		return cssValue;
+	}
+	window.encodeHTML = function(text) {
+        var characters = {
+            '<' : '&lt;',
+            '>' : '&gt;',
+            '&' : '&amp;',
+            '"' : '&quot;',
+            '\'': '&#x27;',
+            '/' : '&#x2F;'
+        };
+        return (text + '').replace(/[<>&"'\/]/g, function(c) {
+            return characters[c];
+        });
+    }
 
   document.addEventListener('polymer-ready', function () {
 	var query = function(sel){
@@ -21,15 +65,10 @@
 			// e.stopPropagation();
 			// return false;
 		// });
-	// }
+	// } 
 	
 	
-	var datePicker = new Pikaday(
-    {
-        field: document.getElementById('logDate'),
-        //position: 'bottom right'
-		trigger: document.getElementById('datepicker-button')
-    });
+	//console.log(datePicker);
 	
 	var availableStatus = {
 		1: "New",
@@ -40,16 +79,16 @@
 		6: "In Progress"
 	};
 	
-	var dialogStatus = query("#taskDrawer .taskStatus .itemContent #taskDetailStatus");
-	for (var i in availableStatus){
+	//var dialogStatus = query("#taskDrawer .taskStatus .itemContent #taskDetailStatus");
+	/*for (var i in availableStatus){
 		var el = document.createElement("OPTION");
 		el.text = availableStatus[i];
 		//var currentStatusText = msg.detail.task.status;
 		//currentStatusEl.appendChild(currentStatusText);
 		dialogStatus.appendChild(el);
-	}
+	}*/
 	
-	var availableAssignees = {
+	/*var availableAssignees = {
 		1: "Employee 1",
 		2: "Employee 2",
 		3: "Employee 3",
@@ -63,16 +102,17 @@
 		//var currentStatusText = msg.detail.task.status;
 		//currentStatusEl.appendChild(currentStatusText);
 		dialogAssignees.appendChild(el);
-	}
+	}*/
 	var successToast = query("#toastTaskSubmited");
 	
 	var taskDialog = document.getElementById("dialog");
 	
 	var bodyTheme = "";
 	
-	query("#blackTheme").addEventListener("click",function(e){
-		document.body.className= bodyTheme==="" ? "dark" : "";
-		bodyTheme = bodyTheme ==="dark" ? "" : "dark";
+	
+	query("task-table").$.blackTheme.addEventListener("click",function(e){
+		document.body.classList.toggle("dark");
+		query("task-table").classList.toggle("dark");
 	});
 	
 	
@@ -93,7 +133,25 @@
 		
 	});
 	
+	/*query("task-table").$.taskDrawer.addEventListener("core-select", function(msg){
+		var main = query("#taskDrawer").$.main;
+		var drawer = query("#taskDrawer").$.drawer;
+		var drawerContent = query("#taskDrawer").$.drawer.querySelector("content").getDistributedNodes()[0];//.$.querySelector("#taskComment").$.eh.value;
+		var drawerComment = drawerContent.querySelector("#taskComment").$.eh.value;
+		var row = query("task-table").$.tbody.querySelector(".details");
+		var rowCommentText = query("task-table").$.tbody.querySelector(".details task-comment").$.paper1.querySelector("#commentText").value;
+		
+		if (main===msg.detail.item && query("#taskDrawer").selected==="main"){
+			//if (drawerComment !== )
+			console.log(msg);
+			query("task-table").$.tbody.querySelector(".details task-comment").$.paper1.querySelector("#commentText").value = rowCommentText===drawerComment ? rowCommentText : drawerComment;
+			row.classList.remove("details");
+		}
+		
+	});*/
+	
 	query("task-table").addEventListener("see-task-details", function(msg){
+		return false;
 		// var taskProject = query("#dialog .taskProject .itemContent"),
 		// taskIssue = query("#dialog .taskIssue .itemContent"),
 		// taskPriority = query("#dialog .taskPriority .itemContent"),
@@ -130,7 +188,7 @@
 		taskPriority = query("#taskDrawer .taskPriority .itemContent"),
 		taskStatus = query("#taskDrawer .taskStatus .itemContent #taskDetailStatus"),
 		taskAssignee = query("#taskDrawer .taskAssignee .itemContent #taskDetailAssignee"),
-		taskComment = query("#taskDrawer #taskComment");
+		taskComment = query("#taskDrawer #taskComment").$.eh;
 		 
 		taskProject.innerHTML = msg.detail.task.project;
 		taskIssue.innerHTML = msg.detail.task.issue;
@@ -151,10 +209,26 @@
 		successToast.text = "Task "+msg.detail.task.issue+" updated!";
 		// //{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer"},
 		// query("#drawer #taskSubmit").disabled= false;
-		// query("#drawer #taskSubmit").textContent = "Submit";
+		// query("#drawer #taskSubmit").textContent = "Submit"; 
 		
 		query("core-drawer-panel").openDrawer();
 	});
+	
+	/*query("core-drawer-panel #datepicker-button").addEventListener("click", function(e){
+		
+	});*/
+	function toggleToday(){
+		var calDay = datePicker.toString();
+		var now = new Date().toDateString()
+		if (now===calDay){
+			//Today chosen
+			query("core-drawer-panel core-item.taskDate .textToday").hidden = false;
+			query("core-drawer-panel core-item.taskDate .inputToday").hidden = true;
+		} else {
+			query("core-drawer-panel core-item.taskDate .textToday").hidden = true;
+			query("core-drawer-panel core-item.taskDate .inputToday").hidden = false;
+		}
+	}
 	
 	query("#dialog #taskSubmit").addEventListener("mousedown", function(e){
 	
@@ -181,14 +255,15 @@
 		}
 	});
 	
-	query(".projectTab paper-button").addEventListener("click", function(msg){
+	/*query(".projectTab paper-button").addEventListener("click", function(msg){
 		var collapseTarget = query("#collapse");
 		var tabIcon = query(".projectTab #tabIcon");
 		
 		tabIcon.icon = collapseTarget.opened ? "expand-less" : "expand-more";
 		
 		collapseTarget.toggle();
-	});
+	});*/
+	
   });
   
 

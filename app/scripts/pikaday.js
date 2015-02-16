@@ -505,7 +505,7 @@
 			e.stopPropagation();
             var target = e.target || e.originalTarget || e.srcElement,
                 pEl = target;
-			var myTarget = 	target.templateInstance.model;
+			//var myTarget = 	target.templateInstance.model;
 			
 			
             if (!target) {
@@ -529,8 +529,8 @@
             }
             while ((pEl = pEl.parentNode));
             if (self._v && target !== opts.trigger && pEl !== opts.trigger && e.originalTarget !== opts.trigger ) {
-				console.log("fuck");
-                //self.hide();
+				
+                self.hide();
             }
         };
 

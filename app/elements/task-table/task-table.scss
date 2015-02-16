@@ -73,11 +73,14 @@ table{
 		}
 		
 		&.prio div{
-			padding-left:0;
+			
 			height:31px;
 			line-height:31px;
-			text-align:left;
-			padding-left:12px;
+			text-align:center;
+			padding:0 5px;
+			overflow:hidden;
+			white-space:nowrap;
+			text-overflow:ellipsis;
 			/*Priorities*/
 			&.low{
 				background: $low;
@@ -99,19 +102,22 @@ table{
 		
 		
 	}
-	tr{
+	tbody tr{
 		cursor:pointer;
 	}
-	
+	tr:hover{
+		background:#f9f9f9;
+	}
 	tr.active{
-		background:#f6f6f6;
+		background:#f2f2f2;
 	}
 	
 	
 	
 }
 /*Dark theme*/
-:host-context(.dark) { 
+.dark{
+/*:host-context(.dark) { */
 	table{
 		td{
 			border-bottom-color: $darkRowBorders;
@@ -123,6 +129,9 @@ table{
 			div.th-container{
 				border-right-color: $darkRowBorders;
 			}
+		}
+		tr:hover{
+			background:#303030;
 		}
 		tr.active{
 			background:$darkHighLight;

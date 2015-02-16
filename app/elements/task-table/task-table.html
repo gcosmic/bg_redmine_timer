@@ -1,55 +1,167 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <polymer-element name="task-table" id="taskTable" attributes="">
+	<link rel="stylesheet" href="task-table.css">
   <template>
-    <link rel="stylesheet" href="task-table.css">
-	<table>
-		<thead>
-			<tr>
-				<th class="col-corner"><div class="th-container"></div></th>
-				<th class="col-time"><div class="th-container">Time spent</div></th>
-				<th class="col-project"><div class="th-container">Project</div></th> 
-				<th class="col-priority"><div class="th-container">Priority</div></th> 
-				<th class="col-status"><div class="th-container">Status</div></th>
-				<th class="col-issue"><div class="th-container">Issue</div></th>
-				<th class="col-comment"><div class="th-container">Comment</div></th>
-			</tr>
-		</thead>
-		<tbody id="tbody">
-			<template repeat="{{task, ind in tasks}}">
-				<tr on-active-timer="{{highlight}}" on-click="{{seeTaskDetails}}" taskInd="{{ind}}">
-					<td colspan=2>
-						<stop-watch indexRow="{{ind}}"></stop-watch>
-					</td>
-					<td>{{task.project}}</td>
-					<td class="prio"><div class="{{task.priorityClass}}">{{task.priority}}</div></td>
-					<td>
-						<!-- <core-dropdown-menu label="Status">
-							<core-dropdown class="dropdown">
-								<core-selector selected="{{task.status}}">
-									<template repeat="{{s in statusOpts}}">
-										<core-item label="{{s.status}}"></core-item>
-									</template>
-								</core-selector>
-							</core-dropdown>
-						</core-dropdown-menu> -->
-						{{task.status}}
-					</td>
-					<td><a href="http://www.google.com" on-click="{{handleLink}}">{{task.issue}}</a></td>
-					<td>
-						<task-comment priority="{{task.priorityClass}}"></task-comment>
-					</td>
-				</tr>
-			</template>
-		</tbody>
-	</table>
-  </template>
+		
+		<core-drawer-panel rightDrawer forceNarrow id="taskDrawer" disableSwipe disableEdgeSwipe drawerWidth="326px" disablePanelClose >
+		  <div drawer>  
+			  <paper-button class="panelTitle" core-drawer-toggle >
+				   <core-icon  icon="arrow-back" core-drawer-toggle >
+					
+				   </core-icon>
+			  </paper-button>
+			  
+			  
+			  <core-item label="Project" class="taskProject">
+				
+				<div class="itemContent" >{{detailTask.project.name}}</div>
+			  </core-item>
+			  <core-item label="Issue" class="taskIssue">
+				
+				<div class="itemContent" >#{{detailTask.id}} - {{detailTask.subject}}</div>
+			  </core-item>
+			  <core-item label="Priority" class="taskPriority">
+				
+				<div class="itemContent" >{{detailTask.priority.name}}</div>
+			  </core-item>
+			  <core-item label="Status" class="taskStatus">
+					
+					<div class="itemContent" >
+						<select name="" id="taskDetailStatus">
+							<template repeat="{{status in allStatus}}">
+								<option value="{{status.id}}" >{{status.status}}</option>
+							</template>
+						</select>
+					</div>
+			  </core-item>
+			   <core-item label="Assignee" class="taskAssignee">
+					
+					<div class="itemContent" >
+						<select name="" id="taskDetailAssignee">
+							<template repeat="{{person in allAssignees}}">
+								<option value="{{person.id}}">{{person.name}}</option>
+							</template>
+							
+							
+						</select>
+					</div>
+			  </core-item>
+			   <core-item label="Date" class="taskDate">
+					<div class="itemContent">
+						<span class="textToday">Today</span>
+						<span class="inputToday" hidden>
+						<input type="text" id="logDate" /></span>
+						<span id="datepickerbutton"><core-icon-button icon="today"  ></core-icon-button></span>
+						
+					</div>
+			  </core-item>
+			   <core-item label="Comment" class="taskComment" layout vertical start-justified>
+					<div class="itemContent" >
+						<fluid-textarea id="taskComment" rows="2"></fluid-textarea>
+					</div>
+			  </core-item>
+			  <core-item layout start-justified class="noLabel taskActions">
+				
+				<paper-button core-drawer-toggle>Cancel</paper-button>
+		  
+				<paper-button affirmative id="taskSubmit">Submit</paper-button>
+			  </core-item>
+		  </div>
+		  <div main>
+			
+			<div class="topBar">
+				<core-field>
+				  <core-icon icon="lock"></core-icon>
+				  <input placeholder="API Key">
+				  <paper-button>Save</paper-button>
+				  <div flex></div>
+				  
+				  <paper-button id="blackTheme"><core-icon icon="invert-colors"></core-icon></paper-button>
+				  
+				</core-field>
+			</div>
+			<div class="mainWrap">
+				
+				<div id="allProjects">
+					<template repeat="{{project, ind in finalArray}}">
+					<div class="projectTab" on-tap="{{toggleCollapse}}">
+						<paper-button start-justified layout horizontal >
+							{{project.name}}
+							<core-icon icon="expand-more" id="tabIcon"></core-icon-button>
+						</paper-button>
+					</div>
+					<core-collapse id="collapse" opened?="{{ind==0}}">
+						<table>
+							<thead>
+								<tr>
+									<th class="col-corner"><div class="th-container"></div></th>
+									<th class="col-time"><div class="th-container">Time spent</div></th>
+									<th class="col-project"><div class="th-container">Project</div></th> 
+									<th class="col-priority"><div class="th-container">Priority</div></th> 
+									<th class="col-status"><div class="th-container">Status</div></th>
+									<th class="col-issue"><div class="th-container">Issue</div></th>
+									<th class="col-comment"><div class="th-container">Comment</div></th>
+								</tr>
+							</thead>
+							<tbody id="tbody">
+								
+									<tr on-active-timer="{{highlight}}" on-click="{{seeTaskDetails}}" taskInd="{{ind}}" template repeat="{{task in project.issue}}">
+										<td colspan=2>
+											<stop-watch indexRow="{{ind}}"></stop-watch>
+										</td>
+										<td>{{task.project.name}}</td>
+										<td class="prio"><div class="{{task.priority.name | filterClass}}">{{task.priority.name}}</div></td>
+										<td>
+											<!-- <core-dropdown-menu label="Status">
+												<core-dropdown class="dropdown">
+													<core-selector selected="{{task.status}}">
+														<template repeat="{{s in statusOpts}}">
+															<core-item label="{{s.status}}"></core-item>
+														</template>
+													</core-selector>
+												</core-dropdown>
+											</core-dropdown-menu> -->
+											{{task.status.name}}
+										</td>
+										<td><a href="http://www.google.com" on-click="{{handleLink}}">#{{task.id}} - {{task.subject}}</a></td>
+										<td>
+											<task-comment priority="{{task.priority.name | filterClass}}"></task-comment>
+										</td>
+									</tr>
+								
+							</tbody>
+						</table>
+					</core-collapse>
+					</template>
+			 </div>
+			</div>
+		  </div>
+	</core-drawer-panel>
+	 </template>
+ 
   <script>
     (function () {
       Polymer({
         // define element prototype here
 		ready: function(){
-			this.tasks = [
+			
+			this.finalArray = finalArray;
+			this.detailTask = [];
+			this.allAssignees = allArrAssignees;
+			this.allStatus = allArrStatus;
+			var datePicker = new Pikaday(
+			{
+				field: this.$.taskDrawer.$.logDate,
+				//position: 'bottom right'
+				trigger: this.$.taskDrawer.$.datepickerbutton,
+				position:"bottom right"
+				//onSelect: toggleToday
+			});
+			
+			datePicker.setDate(new Date(),true);
+			//this.sortedProjects = [];
+			/*this.tasks = [
 				{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer", assignee: "3"},
 				{project: "Something", priority: "Immediate", status: "BGQA", issue: "#6600 - Create new redmine timer", assignee: "3"},
 				{project: "Something Something Something Something Something Something Something Something Something Something Something Something Something Something", priority: "Hold", status: "BGQA", issue: "#6600 - Create new redmine timer Create new redmine timer Create new redmine timer Create new redmine timer",
@@ -71,11 +183,11 @@
 				{name: "John", id: "123"},
 				{name: "Sean", id: "222"},
 				{name: "Gabe", id: "5555"}
-			];
+			];*/
 			
 			
 			//Transform task properties
-			for (var i=0;i<this.tasks.length;i++){
+			/*for (var i=0;i<this.tasks.length;i++){
 				for (var key in this.tasks[i]){
 					if (key ==="priority"){
 						this.tasks[i]["priorityClass"] = this.tasks[i][key].toLowerCase();
@@ -84,18 +196,35 @@
 						//this.tasks[i][key] = this.tasks[i][key]
 					}
 				}
-			}
+			}*/
 			
+		},
+		toggleCollapse: function(e,detail,sender){
+		
+			sender.nextElementSibling.toggle()
+			//console.log(sender.templateInstance);
 		},
 		highlight : function(e,detail,sender){
-			sender.className = detail.active ? "active" : "";
+			
+			sender.classList.toggle("active");
+		},
+		filterClass : function(val){
+			return val.toLowerCase();
 		},
 		seeTaskDetails : function(e,detail,sender){
+			sender.classList.add("details");
 			if (e.button ===0){
-				var taskObj = e.target.templateInstance.model.task;
-				this.fire('see-task-details', {taskRow : sender, task : taskObj });
+				//console.log(sender);
+				var taskObj = sender.templateInstance.model.task;
+				//this.fire('taskd', {taskRow : sender, task : taskObj });
+				this.detailTask = taskObj;
+				this.$.taskDrawer.togglePanel();
 			}
 			
+			
+		},
+		openTaskDetails : function(e,detail,sender){
+			console.log("hi from "+sender.id);
 		},
 		handleLink : function(e,detail,sender){
 			

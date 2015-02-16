@@ -6,6 +6,7 @@ body {
   font-size:12px;
   margin:0;
 }
+
 input, select, textarea, option{
 	font-family: 'RobotoDraft', Helvetica, Arial, sans-serif;
 	font-size:12px;
@@ -69,7 +70,12 @@ a{
 	}
 }
 
-paper-action-dialog paper-button{
+paper-button[affirmative]{
+		background:#91DD1B;
+		color:#000000;
+	}
+
+paper-button{
 	background:#818181;
 	height:25px;
 	border-radius:0;
@@ -81,11 +87,8 @@ paper-action-dialog paper-button{
 			height:25px;
 		}
 }
-	paper-action-dialog paper-button[affirmative]{
-		background:#91DD1B;
-		color:#000000;
-	}
-	paper-action-dialog paper-button[disabled]{
+	
+	paper-button[disabled]{
 		background: none repeat scroll 0% 0% #EAEAEA;
 		color: #A8A8A8;
 		cursor: auto;
@@ -107,31 +110,71 @@ paper-action-dialog paper-button{
 		width:100%;
 	}
 }
-
+core-drawer-panel{
+	overflow-y:visible;
+}
 core-drawer-panel #drawer{
 	background:#ffffff;
+	div[drawer]{
+		padding-top:23px;
+	}
+	.panelTitle {
+			height:auto;
+			color:inherit;
+			background:none;
+			margin-bottom:40px;
+			#label{
+				font-size:24px;
+				font-weight:bold;
+			}
+			.button-content{
+				display:block;
+				text-align:left;
+				height:auto;
+				box-sizing:initial;
+			}
+		}
 	core-item{
 		padding-left:10px;
 		padding-right:10px;
 		#label{
 			width:75px;
 		}
+		&.noLabel{
+			#label{
+				display:none;
+			}
+		}
+		
+		
 		.itemContent{
 			width:160px;
 			overflow:hidden;
 			text-overflow:ellipsis;
 			white-space:nowrap;
 			input{
-				width:90px;
+				width:105px;
 			}
 			textarea{
-				resize:vertical;
-				min-height:200px;
+				resize:none;
+				min-height:20px;
+				width:100%;
+				box-sizing:border-box;
 				font-family:"RobotoDraft",sans-serif;
 			}
 		}
 		&.taskDate{
 			
+		}
+		&.taskComment{
+			align-items:flex-start;
+			.itemContent{
+				margin-top:10px;
+				width:100%;
+			}
+		}
+		&.taskActions{
+			margin-top:40px;
 		}
 	}
 }
@@ -155,29 +198,7 @@ body.dark {
 	
 	core-drawer-panel #drawer{
 	background:#333;
-	core-item{
-		padding-left:10px;
-		padding-right:10px;
-		#label{
-			width:75px;
-		}
-		.itemContent{
-			width:160px;
-			overflow:hidden;
-			text-overflow:ellipsis;
-			white-space:nowrap;
-			input{
-				width:90px;
-			}
-			textarea{
-				resize:vertical;
-				min-height:200px;
-			}
-		}
-		&.taskDate{
-			
-		}
-	}
+	
 }
 	
 }
