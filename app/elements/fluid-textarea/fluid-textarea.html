@@ -1,13 +1,14 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="fluid-textarea" attributes="rows">
+<polymer-element name="fluid-textarea" attributes="rows content">
   <template>
     <link rel="stylesheet" href="fluid-textarea.css">
-	<textarea name="" id="eh" on-input="{{keyuphandler}}"></textarea>
+	<textarea name="" id="eh" on-input="{{keyuphandler}}" value="{{content}}" on-focus="{{keyuphandler}}"></textarea>
 	<div id="clone" style="width:{{iniWidth}}px;"></div>
   </template>
   <script>
     (function () {
+		
       Polymer({
 		rows: 3, //default 3 rows
 		ready: function(){
@@ -17,6 +18,7 @@
 			this.startingBaseHeight = this.singleRow*this.rows; //Calculated rows height
 			this.iniWidth = this.$.eh.clientWidth - window.getCSS(this.$.eh,"padding-left").split("px")[0] - window.getCSS(this.$.eh,"padding-right").split("px")[0];
 		},
+		
 		keyuphandler : function(e,detail,sender){
 			//Enter key
 			//if (e.keyCode===13){}
@@ -26,11 +28,16 @@
 			//Then check if the reference div has changed height
 			this.check();
 		},
+		recheck: function(){
+			this.$.clone.innerHTML = this.filter(this.content);
+			//Then check if the reference div has changed height
+			this.check();
+		},
 		check: function(){
+			
 			//Get the textarea's current base height and reference div's height+a free row
 			var textH = this.$.eh.clientHeight - parseInt(window.getCSS(this.$.eh,"padding-top").split("px")[0],10) - parseInt(window.getCSS(this.$.eh,"padding-bottom").split("px")[0],10); // INT
 			var cloneH = this.$.clone.clientHeight + this.singleRow;
-			
 			
 			if (cloneH!==textH && cloneH>this.startingBaseHeight){
 				//Reference div has a different height, copy it and add the textarea's various paddings
@@ -41,6 +48,7 @@
 			}
 			
 		},
+		
 		filter: function(value) {
 			return  encodeHTML(value).replace(/\n/g, '&nbsp;<br />&nbsp;')
 		}

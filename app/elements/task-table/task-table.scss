@@ -111,7 +111,44 @@ table{
 	tr.active{
 		background:#f2f2f2;
 	}
-	
+	#paper1{
+		padding:0;
+		#underline{
+			top:2px;
+			.unfocused-underline{
+				background: transparent;
+			}
+		}
+		/*Priorities*/
+				&.low{
+					.focused-underline{
+						background: $low;
+					}
+					
+				}
+				&.normal{
+					.focused-underline{
+						background: $normal;
+					}
+				}
+				&.high{
+					.focused-underline{
+						background: $high;
+					}
+				}
+				&.immediate{
+					.focused-underline{
+						background: $immediate;
+						color:#ffffff;
+					}
+				}
+				&.hold{
+					.focused-underline{
+						background: $hold;
+					}
+				}
+	}
+
 	
 	
 }

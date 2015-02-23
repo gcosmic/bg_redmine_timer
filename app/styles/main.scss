@@ -148,7 +148,7 @@ core-drawer-panel #drawer{
 		
 		
 		.itemContent{
-			width:160px;
+			width:165px;
 			overflow:hidden;
 			text-overflow:ellipsis;
 			white-space:nowrap;
@@ -162,9 +162,14 @@ core-drawer-panel #drawer{
 				box-sizing:border-box;
 				font-family:"RobotoDraft",sans-serif;
 			}
+			.dateContain{
+				width:120px;display:inline-block;
+			}
 		}
 		&.taskDate{
-			
+			#datepickerbutton{
+				display:inline-block;
+			}
 		}
 		&.taskComment{
 			align-items:flex-start;

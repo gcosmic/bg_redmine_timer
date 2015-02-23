@@ -500,22 +500,13 @@
 
         self._onClick = function(e)
         {
-			
             e = e || window.event;
 			e.stopPropagation();
-            var target = e.target || e.originalTarget || e.srcElement,
+            var target = e.target || e.srcElement,
                 pEl = target;
-			//var myTarget = 	target.templateInstance.model;
-			
-			
             if (!target) {
-				
                 return;
             }
-			// if (target !== opts.trigger && pEl !== opts.trigger){
-				// target = target.querySelector("#datepicker-button");
-				// pEl = pEl.querySelector("#datepicker-log");
-			// }
             if (!hasEventListeners && hasClass(target, 'pika-select')) {
                 if (!target.onchange) {
                     target.setAttribute('onchange', 'return;');
@@ -528,8 +519,7 @@
                 }
             }
             while ((pEl = pEl.parentNode));
-            if (self._v && target !== opts.trigger && pEl !== opts.trigger && e.originalTarget !== opts.trigger ) {
-				
+            if (self._v && target !== opts.trigger && pEl !== opts.trigger) {
                 self.hide();
             }
         };

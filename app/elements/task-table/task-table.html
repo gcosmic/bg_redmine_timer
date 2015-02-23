@@ -6,7 +6,7 @@
 		
 		<core-drawer-panel rightDrawer forceNarrow id="taskDrawer" disableSwipe disableEdgeSwipe drawerWidth="326px" disablePanelClose >
 		  <div drawer>  
-			  <paper-button class="panelTitle" core-drawer-toggle >
+			  <paper-button class="panelTitle" core-drawer-toggle  >
 				   <core-icon  icon="arrow-back" core-drawer-toggle >
 					
 				   </core-icon>
@@ -49,16 +49,18 @@
 			  </core-item>
 			   <core-item label="Date" class="taskDate">
 					<div class="itemContent">
-						<span class="textToday">Today</span>
-						<span class="inputToday" hidden>
-						<input type="text" id="logDate" /></span>
-						<span id="datepickerbutton"><core-icon-button icon="today"  ></core-icon-button></span>
+						<span class="dateContain">
+							<span class="textToday" >Today</span>
+							<span class="inputToday" hidden>
+							<input type="text" id="logDate" value="{{taskDateChosen}}"/></span>
+						</span>
+						<span id="datepickerbutton" on-tap="{{openDatePicker}}"><core-icon-button icon="today"  ></core-icon-button></span>
 						
 					</div>
 			  </core-item>
 			   <core-item label="Comment" class="taskComment" layout vertical start-justified>
 					<div class="itemContent" >
-						<fluid-textarea id="taskComment" rows="2"></fluid-textarea>
+						<fluid-textarea id="taskComment" rows="2" content="{{taskCommentContent[detailTask.id]}}"></fluid-textarea>
 					</div>
 			  </core-item>
 			  <core-item layout start-justified class="noLabel taskActions">
@@ -85,8 +87,8 @@
 				
 				<div id="allProjects">
 					<template repeat="{{project, ind in finalArray}}">
-					<div class="projectTab" on-tap="{{toggleCollapse}}">
-						<paper-button start-justified layout horizontal >
+					<div class="projectTab" on-tap="{{toggleCollapse}}" flex self-center>
+						<paper-button start-justified layout horizontal center >
 							{{project.name}}
 							<core-icon icon="expand-more" id="tabIcon"></core-icon-button>
 						</paper-button>
@@ -124,9 +126,12 @@
 											</core-dropdown-menu> -->
 											{{task.status.name}}
 										</td>
-										<td><a href="http://www.google.com" on-click="{{handleLink}}">#{{task.id}} - {{task.subject}}</a></td>
+										<td><a href="{{task.id | appendUrl}}" on-click="{{handleLink}}">#{{task.id}} - {{task.subject}}</a></td>
 										<td>
-											<task-comment priority="{{task.priority.name | filterClass}}"></task-comment>
+											
+											<paper-input-decorator id="paper1" label="..." class="{{task.priority.name | filterClass}}" on-click="{{stopClick}}">
+												<input type="text" id="commentText" value="{{taskCommentContent[task.id]}}"/>
+											</paper-input-decorator>
 										</td>
 									</tr>
 								
@@ -142,7 +147,28 @@
  
   <script>
     (function () {
+		function toggleToday(){
+			
+			var calDay = this.toString();
+			var dateInput = document.querySelector("task-table").$.taskDrawer.querySelector(".inputToday");
+			var dateText = document.querySelector("task-table").$.taskDrawer.querySelector(".textToday");
+			
+			var now = new Date().toDateString();
+			if (now===calDay){
+				//Today chosen
+				dateText.hidden = false;
+				dateInput.hidden = true;
+				//query("core-drawer-panel core-item.taskDate .textToday").hidden = false;
+				//query("core-drawer-panel core-item.taskDate .inputToday").hidden = true;
+			} else {
+				dateText.hidden = true;
+				dateInput.hidden = false;
+				//query("core-drawer-panel core-item.taskDate .textToday").hidden = true;
+				//query("core-drawer-panel core-item.taskDate .inputToday").hidden = false;
+			}
+		};
       Polymer({
+		
         // define element prototype here
 		ready: function(){
 			
@@ -150,16 +176,21 @@
 			this.detailTask = [];
 			this.allAssignees = allArrAssignees;
 			this.allStatus = allArrStatus;
-			var datePicker = new Pikaday(
-			{
-				field: this.$.taskDrawer.$.logDate,
-				//position: 'bottom right'
-				trigger: this.$.taskDrawer.$.datepickerbutton,
-				position:"bottom right"
-				//onSelect: toggleToday
-			});
+			this.currInd = 0;
+			this.taskCommentContent = [];
+			this.taskDateChosen = this.todayDate = new Date().toDateString();
 			
-			datePicker.setDate(new Date(),true);
+			this.datePicker = new Pikaday(
+			{
+				field: this.$.taskDrawer.querySelector("#logDate"),
+				//position: 'bottom right'
+				trigger: this.$.taskDrawer.querySelector("#datepickerbutton"),
+				position:"bottom right",
+				
+				onSelect :toggleToday
+			});
+			//console.log(datePicker);
+			this.datePicker.setDate(new Date());
 			//this.sortedProjects = [];
 			/*this.tasks = [
 				{project: "Ricardo", priority: "Normal", status: "New", issue: "#6600 - Create new redmine timer", assignee: "3"},
@@ -199,6 +230,18 @@
 			}*/
 			
 		},
+		appendUrl: function(e,detail,sender){
+			return taskURL+""+e;
+		},
+		openDatePicker: function(e){
+			this.datePicker.show();
+			this.datePicker.adjustPosition();
+			
+		},
+		stopClick: function(e){
+			e.stopPropagation();
+			return false;
+		},
 		toggleCollapse: function(e,detail,sender){
 		
 			sender.nextElementSibling.toggle()
@@ -218,14 +261,35 @@
 				var taskObj = sender.templateInstance.model.task;
 				//this.fire('taskd', {taskRow : sender, task : taskObj });
 				this.detailTask = taskObj;
+				
 				this.$.taskDrawer.togglePanel();
+				//this.$.taskComment.rows = 3;
+				this.$.taskComment.recheck();
 			}
-			
-			
 		},
 		openTaskDetails : function(e,detail,sender){
 			console.log("hi from "+sender.id);
 		},
+		/*toggleToday : function(){
+			console.log(this.detailTask);
+			var calDay = this.datePicker.toString();
+			var dateInput = this.$.taskDrawer.querySelector("#logDate");
+			var dateText = this.$.taskDrawer.querySelector(".textToday");
+			
+			var now = new Date().toDateString()
+			if (now===calDay){
+				//Today chosen
+				dateText.hidden = false;
+				dateInput.hidden = true;
+				//query("core-drawer-panel core-item.taskDate .textToday").hidden = false;
+				//query("core-drawer-panel core-item.taskDate .inputToday").hidden = true;
+			} else {
+				dateText.hidden = true;
+				dateInput.hidden = false;
+				//query("core-drawer-panel core-item.taskDate .textToday").hidden = true;
+				//query("core-drawer-panel core-item.taskDate .inputToday").hidden = false;
+			}
+		},*/
 		handleLink : function(e,detail,sender){
 			
 			e.stopPropagation();

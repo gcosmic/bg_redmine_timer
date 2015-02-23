@@ -149,6 +149,7 @@
 		}
 		
 	});*/
+
 	
 	query("task-table").addEventListener("see-task-details", function(msg){
 		return false;
@@ -217,18 +218,6 @@
 	/*query("core-drawer-panel #datepicker-button").addEventListener("click", function(e){
 		
 	});*/
-	function toggleToday(){
-		var calDay = datePicker.toString();
-		var now = new Date().toDateString()
-		if (now===calDay){
-			//Today chosen
-			query("core-drawer-panel core-item.taskDate .textToday").hidden = false;
-			query("core-drawer-panel core-item.taskDate .inputToday").hidden = true;
-		} else {
-			query("core-drawer-panel core-item.taskDate .textToday").hidden = true;
-			query("core-drawer-panel core-item.taskDate .inputToday").hidden = false;
-		}
-	}
 	
 	query("#dialog #taskSubmit").addEventListener("mousedown", function(e){
 	
