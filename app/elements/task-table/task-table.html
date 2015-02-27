@@ -58,16 +58,24 @@
 						
 					</div>
 			  </core-item>
-			   <core-item label="Comment" class="taskComment" layout vertical start-justified>
-					<div class="itemContent" >
-						<fluid-textarea id="taskComment" rows="2" content="{{taskCommentContent[detailTask.id]}}"></fluid-textarea>
-					</div>
+			  
+			   <core-item label="Comment" >
+					<paper-input-decorator id="paper2" label="..." class="{{detailTask.priority.name | filterClass}}" on-click="{{stopClick}}" >
+						<input type="text" id="commentText" value="{{taskCommentContent[detailTask.id]}}" />
+					</paper-input-decorator>
 			  </core-item>
+			  
+			  <core-item label="Note" class="taskComment" layout vertical start-justified>
+				<div class="itemContent" >
+					<fluid-textarea id="taskComment" rows="2" content=""></fluid-textarea>
+				</div>
+			  </core-item>
+			  
 			  <core-item layout start-justified class="noLabel taskActions">
 				
 				<paper-button core-drawer-toggle>Cancel</paper-button>
 		  
-				<paper-button affirmative id="taskSubmit">Submit</paper-button>
+				<paper-button affirmative id="taskSubmit" >Submit</paper-button>
 			  </core-item>
 		  </div>
 		  <div main>
@@ -79,6 +87,7 @@
 				  <paper-button>Save</paper-button>
 				  <div flex></div>
 				  
+				  <paper-button on-tap="{{changeOrder}}"><core-icon icon="sort"></core-icon></paper-button>
 				  <paper-button id="blackTheme"><core-icon icon="invert-colors"></core-icon></paper-button>
 				  
 				</core-field>
@@ -179,6 +188,7 @@
 			this.currInd = 0;
 			this.taskCommentContent = [];
 			this.taskDateChosen = this.todayDate = new Date().toDateString();
+			this.reversed = false;
 			
 			this.datePicker = new Pikaday(
 			{
@@ -243,7 +253,7 @@
 			return false;
 		},
 		toggleCollapse: function(e,detail,sender){
-		
+			sender.querySelector("#tabIcon").icon = sender.nextElementSibling.opened===true ? "expand-more" : "expand-less";
 			sender.nextElementSibling.toggle()
 			//console.log(sender.templateInstance);
 		},
@@ -252,6 +262,7 @@
 			sender.classList.toggle("active");
 		},
 		filterClass : function(val){
+			var val = val || "";
 			return val.toLowerCase();
 		},
 		seeTaskDetails : function(e,detail,sender){
@@ -264,11 +275,11 @@
 				
 				this.$.taskDrawer.togglePanel();
 				//this.$.taskComment.rows = 3;
-				this.$.taskComment.recheck();
+				//this.$.taskComment.recheck();
 			}
 		},
 		openTaskDetails : function(e,detail,sender){
-			console.log("hi from "+sender.id);
+			
 		},
 		/*toggleToday : function(){
 			console.log(this.detailTask);
@@ -294,6 +305,24 @@
 			
 			e.stopPropagation();
 			return false;
+		},
+		changeOrder: function(e,detail,sender){
+			if (!this.reversed){			
+				finalArray.sort(function (a, b) {
+				  if (a.name > b.name) {
+					return 1;
+				  }
+				  if (a.name < b.name) {
+					return -1;
+				  }
+				  // a must be equal to b
+				  return 0;
+				});
+				this.reversed = true;
+			} else {
+				finalArray.reverse();
+			}
+			
 		}
 		
 		

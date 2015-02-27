@@ -39,7 +39,7 @@ table{
 		}
 		&.col-project{
 			width:291px;
-			width:(291/1359)*100%;
+			width:(213/1359)*100%;
 		}
 		&.col-priority{
 			width:97px;
@@ -105,13 +105,16 @@ table{
 	tbody tr{
 		cursor:pointer;
 	}
-	tr:hover{
+	tbody tr:hover{
 		background:#f9f9f9;
 	}
 	tr.active{
 		background:#f2f2f2;
 	}
-	#paper1{
+	
+	
+}
+#paper1, #paper2{
 		padding:0;
 		#underline{
 			top:2px;
@@ -148,10 +151,6 @@ table{
 					}
 				}
 	}
-
-	
-	
-}
 /*Dark theme*/
 .dark{
 /*:host-context(.dark) { */
@@ -161,13 +160,16 @@ table{
 			&.prio div{
 				color: $darkPriorities;
 			}
+			&.prio div.immediate{
+				color:#ffffff;
+			}
 		}
 		th{
 			div.th-container{
 				border-right-color: $darkRowBorders;
 			}
 		}
-		tr:hover{
+		tbody tr:hover{
 			background:#303030;
 		}
 		tr.active{

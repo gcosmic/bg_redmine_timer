@@ -65,6 +65,7 @@ a{
 	border-radius:0;
 	margin:0;
 	height:31px;
+	border-bottom:1px solid #555;
 	.button-content{
 		border-radius:0;
 	}
@@ -182,6 +183,10 @@ core-drawer-panel #drawer{
 			margin-top:40px;
 		}
 	}
+}
+
+div#scrim, core-drawer-panel div#drawer{
+	position:fixed;
 }
 
 /*Dark theme*/
