@@ -118,6 +118,22 @@
 		handleFieldClick: function(e,detail,sender){
 			sender.setSelectionRange(0, sender.value.length);
 			e.stopPropagation();
+		},
+		reset: function(){
+			clearInterval(this.timer);
+			this.startTS = 0;
+			this.running = false;
+			this.hours = "00";
+			this.minutes = "00";
+			this.seconds = "00";
+			
+			this.storedTime = 0;
+			this.resuming = false;
+			this.hoursNumeric = "";
+			this.manualEntry = false;
+			
+			
+			
 		}
 		
         // define element prototype here

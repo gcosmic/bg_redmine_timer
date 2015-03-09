@@ -30,7 +30,7 @@
 					<div class="itemContent" >
 						<select name="" id="taskDetailStatus">
 							<template repeat="{{status in allStatus}}">
-								<option value="{{status.id}}" >{{status.status}}</option>
+								<option value="{{status.id}}" selected?="{{status.id==detailTask.status.id}}">{{status.name}}</option>
 							</template>
 						</select>
 					</div>
@@ -39,8 +39,8 @@
 					
 					<div class="itemContent" >
 						<select name="" id="taskDetailAssignee">
-							<template repeat="{{person in allAssignees}}">
-								<option value="{{person.id}}">{{person.name}}</option>
+							<template repeat="{{group in projectAssignees[0].memberships | getUsers}}">
+								<option value="{{group.user.id}}" selected?="{{group.user.id==detailTask.assigned_to.id}}">{{group.user.name}}</option>
 							</template>
 							
 							
@@ -75,7 +75,7 @@
 				
 				<paper-button core-drawer-toggle>Cancel</paper-button>
 		  
-				<paper-button affirmative id="taskSubmit" >Submit</paper-button>
+				<paper-button affirmative id="taskSubmit" on-tap="{{submitTask}}">Submit</paper-button>
 			  </core-item>
 		  </div>
 		  <div main>
@@ -83,10 +83,17 @@
 			<div class="topBar">
 				<core-field>
 				  <core-icon icon="lock"></core-icon>
-				  <input placeholder="API Key">
-				  <paper-button>Save</paper-button>
+				  <input id="apiKey" placeholder="API Key" value="{{apiKey}}">
+				  <paper-button on-tap="{{setApiKey}}">Save</paper-button>
 				  <div flex></div>
-				  
+				 
+				  <input type="text" id="filterID" placeholder="Task #" value="{{filterID}}"/>
+				   <paper-button hidden?="{{!filterActive}}" on-tap="{{resetFilter}}">
+					Remove Filter
+				  </paper-button>
+				  <paper-button on-tap="{{searchTask}}" hidden?="{{filterActive}}">
+					Add Filter
+				  </core-icon></paper-button>
 				  <paper-button on-tap="{{changeOrder}}"><core-icon icon="sort"></core-icon></paper-button>
 				  <paper-button id="blackTheme"><core-icon icon="invert-colors"></core-icon></paper-button>
 				  
@@ -119,7 +126,7 @@
 								
 									<tr on-active-timer="{{highlight}}" on-click="{{seeTaskDetails}}" taskInd="{{ind}}" template repeat="{{task in project.issue}}">
 										<td colspan=2>
-											<stop-watch indexRow="{{ind}}"></stop-watch>
+											<stop-watch indexRow="{{ind}}" id="taskTime"></stop-watch>
 										</td>
 										<td>{{task.project.name}}</td>
 										<td class="prio"><div class="{{task.priority.name | filterClass}}">{{task.priority.name}}</div></td>
@@ -135,7 +142,7 @@
 											</core-dropdown-menu> -->
 											{{task.status.name}}
 										</td>
-										<td><a href="{{task.id | appendUrl}}" on-click="{{handleLink}}">#{{task.id}} - {{task.subject}}</a></td>
+										<td><a href="{{task.id | appendUrl}}" target="_blank" on-click="{{handleLink}}">#{{task.id}} - {{task.subject}}</a></td>
 										<td>
 											
 											<paper-input-decorator id="paper1" label="..." class="{{task.priority.name | filterClass}}" on-click="{{stopClick}}">
@@ -152,9 +159,9 @@
 			</div>
 		  </div>
 	</core-drawer-panel>
-	<link rel="stylesheet" href="task-table.css" shim-shadowdom />
+	<link rel="stylesheet" href="task-table.css" shim-shadowdom/>
 	 </template>
-	
+ 
   <script>
     (function () {
 		function toggleToday(){
@@ -177,20 +184,25 @@
 				//query("core-drawer-panel core-item.taskDate .inputToday").hidden = false;
 			}
 		};
+		
       Polymer({
 		
         // define element prototype here
 		ready: function(){
 			
+			this.projectAssignees = projectAssignees;
 			this.finalArray = finalArray;
+			
 			this.detailTask = [];
-			this.allAssignees = allArrAssignees;
 			this.allStatus = allArrStatus;
 			this.currInd = 0;
 			this.taskCommentContent = [];
 			this.taskDateChosen = this.todayDate = new Date().toDateString();
-			this.reversed = false;
-			
+			this.reversed = true;
+			this.filterActive = false;
+			var sortCookie = getCookie("projectSort");
+			this.projectSort = sortCookie!==""?sortCookie:"asc";
+			this.apiKey = userKey?userKey:"";
 			this.datePicker = new Pikaday(
 			{
 				field: this.$.taskDrawer.querySelector("#logDate"),
@@ -241,8 +253,37 @@
 			}*/
 			
 		},
+		setApiKey: function(e,detail,sender){
+			setCookie("apiKey",this.apiKey,700);
+			this.fire("setKey",{});
+		},
 		appendUrl: function(e,detail,sender){
 			return taskURL+""+e;
+		},
+		getUsers: function(items){
+			//Clean up the user array, some groups have no users, we remove them to have a select with no empty options
+			var res = [];
+			var items = items || false;
+			if (items){
+				for (var i=0;i<items.length;i++){
+					
+					if (items[i].hasOwnProperty("user")){
+						res.push(items[i]);
+					}
+				}
+			}
+			res.sort(function (a, b) {
+			  if (a.user.name > b.user.name) {
+				return 1;
+			  }
+			  if (a.user.name < b.user.name) {
+				return -1;
+			  }
+			  // a must be equal to b
+			  return 0;
+			});
+			
+			return res;
 		},
 		openDatePicker: function(e){
 			this.datePicker.show();
@@ -253,8 +294,116 @@
 			e.stopPropagation();
 			return false;
 		},
+		searchTask: function(e,detail,sender){
+			var filterID = parseInt(this.filterID);
+			if (!filterID>0){
+				this.fire("invalidTaskNum",{});
+				return false;
+			} else {
+				//this.finalArray = finalArray.slice(0,1);
+				var foundIssue = false;
+				for (var i=0;i<finalArray.length;i++){
+					for (var u=0;u<finalArray[i].issue.length;u++){
+						
+						var currIssue = finalArray[i].issue[u];
+						
+						if (currIssue.id===filterID){
+							this.finalArray[i].issue = finalArray[i].issue.slice(u,u+1);
+							this.finalArray = finalArray.slice(i,i+1);
+							this.filterActive = true;
+							foundIssue = true;
+							break;
+						}
+					}
+					
+				}
+				if (!foundIssue){
+					this.fire("lostTaskNum",{});
+				}
+			}
+		},
+		resetFilter: function(e,detail,sender){
+			this.finalArray = finalArray;
+			this.filterActive = false;
+		},
+		submitTask: function(e,detail,sender){
+			
+			//this.detailTask.clockObj.reset();
+			sender.disabled=true;
+			sender.textContent = "Sending...";
+			
+			var drawer = this.$.taskDrawer,
+			status = drawer.querySelector("#taskDetailStatus").value,
+			assignee = drawer.querySelector("#taskDetailAssignee").value,
+			date = this.datePicker.getDate(),
+			comment = drawer.querySelector("#commentText").value,
+			note = this.$.taskComment.$.eh.value,
+			hours = this.detailTask.hours,
+			activity_id = 13,
+			doubleUpdate = false,
+			updateMsg = "Task #"+this.detailTask.id+" updated";
+			
+			
+			date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
+			var dataTask = {"issue":{
+				"status_id":status,
+				"assigned_to_id":assignee,
+				"notes":note
+			}};
+			var queryTask = JSON.stringify(dataTask);
+			
+			
+			
+			
+			if (parseFloat(hours)>0){
+				
+				doubleUpdate = true;
+				//Add time
+				var dataTime = {"time_entry":{
+					"issue_id":this.detailTask.id,
+					"hours":hours,
+					"activity_id":activity_id,
+					"comments":comment,
+					"spent_on":date
+				}};
+				var queryTime = JSON.stringify(dataTime);
+				
+				
+				var r = new XMLHttpRequest();
+			
+				r.open("POST", apiURL + 'time_entries.json?key='+ userKey, true);
+				r.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				r.onreadystatechange = function () {
+				  if (r.readyState != 4 || r.status != 200) return;
+				  if (r.responseText!=""){alert(r.responseText);}
+				};
+				r.send(queryTime);
+			}
+			
+			updateMsg = updateMsg + (doubleUpdate?" and time logged!":"!");
+			
+			
+			//Update task
+			var r = new XMLHttpRequest();
+			
+			r.open("PUT", apiURL + 'issues/'+this.detailTask.id+'.json?key='+ userKey, true);
+			r.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			r.onreadystatechange = function () {
+			  if (r.readyState != 4 || r.status != 200) return;
+			  this.fire("taskupdate",{msg:updateMsg});
+			  this.$.taskDrawer.closeDrawer();
+			  sender.disabled=false;
+			  sender.textContent = "Submit";
+			  this.detailTask.rowObj.querySelector("td.prio + td").textContent=drawer.querySelector("#taskDetailStatus option[value='"+status+"']").textContent;
+			  this.detailTask.clockObj.reset();
+			}.bind(this);
+			r.send(queryTask);
+			
+			
+			
+		},
 		toggleCollapse: function(e,detail,sender){
-			sender.querySelector("#tabIcon").icon = sender.nextElementSibling.opened===true ? "expand-more" : "expand-less";
+			sender.querySelector("#tabIcon").icon = sender.nextElementSibling.opened? "expand-more" : "expand-less";
 			sender.nextElementSibling.toggle()
 			//console.log(sender.templateInstance);
 		},
@@ -269,11 +418,15 @@
 		seeTaskDetails : function(e,detail,sender){
 			sender.classList.add("details");
 			if (e.button ===0){
-				//console.log(sender);
 				var taskObj = sender.templateInstance.model.task;
 				//this.fire('taskd', {taskRow : sender, task : taskObj });
-				this.detailTask = taskObj;
 				
+				this.detailTask = taskObj;
+				//console.log(this.detailTask);
+				this.detailTask.hours = sender.querySelector("#taskTime").hoursNumeric;
+				
+				this.detailTask.clockObj = sender.querySelector("#taskTime");
+				this.detailTask.rowObj = sender;
 				this.$.taskDrawer.togglePanel();
 				//this.$.taskComment.rows = 3;
 				//this.$.taskComment.recheck();
@@ -303,13 +456,17 @@
 			}
 		},*/
 		handleLink : function(e,detail,sender){
+			//alert("hi");
+			//window.open(sender.href, '_blank');
 			
 			e.stopPropagation();
 			return false;
 		},
 		changeOrder: function(e,detail,sender){
+			this.projectSort = this.projectSort==="asc"?"desc":"asc";
+			setCookie("projectSort",this.projectSort,700);
 			if (!this.reversed){			
-				finalArray.sort(function (a, b) {
+				this.finalArray.sort(function (a, b) {
 				  if (a.name > b.name) {
 					return 1;
 				  }
@@ -321,7 +478,7 @@
 				});
 				this.reversed = true;
 			} else {
-				finalArray.reverse();
+				this.finalArray.reverse();
 			}
 			
 		}
