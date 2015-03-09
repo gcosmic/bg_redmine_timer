@@ -25,7 +25,7 @@
 				
 				<div class="itemContent" >{{detailTask.priority.name}}</div>
 			  </core-item>
-			  <core-item label="Status" class="taskStatus">
+			  <core-item label="Status" class="taskStatus" hidden?="{{detailTask.custom}}">
 					
 					<div class="itemContent" >
 						<select name="" id="taskDetailStatus">
@@ -35,7 +35,7 @@
 						</select>
 					</div>
 			  </core-item>
-			   <core-item label="Assignee" class="taskAssignee">
+			   <core-item label="Assignee" class="taskAssignee" hidden?="{{detailTask.custom}}">
 					
 					<div class="itemContent" >
 						<select name="" id="taskDetailAssignee">
@@ -65,7 +65,7 @@
 					</paper-input-decorator>
 			  </core-item>
 			  
-			  <core-item label="Note" class="taskComment" layout vertical start-justified>
+			  <core-item label="Note" class="taskComment" layout vertical start-justified hidden?="{{detailTask.custom}}">
 				<div class="itemContent" >
 					<fluid-textarea id="taskComment" rows="2" content=""></fluid-textarea>
 				</div>
@@ -86,14 +86,18 @@
 				  <input id="apiKey" placeholder="API Key" value="{{apiKey}}">
 				  <paper-button on-tap="{{setApiKey}}">Save</paper-button>
 				  <div flex></div>
-				 
+					
+				
 				  <input type="text" id="filterID" placeholder="Task #" value="{{filterID}}"/>
+				 
 				   <paper-button hidden?="{{!filterActive}}" on-tap="{{resetFilter}}">
+				   
 					Remove Filter
 				  </paper-button>
 				  <paper-button on-tap="{{searchTask}}" hidden?="{{filterActive}}">
 					Add Filter
 				  </core-icon></paper-button>
+				   <paper-button on-tap="{{addTaskTimer}}">Add Timer</paper-button>
 				  <paper-button on-tap="{{changeOrder}}"><core-icon icon="sort"></core-icon></paper-button>
 				  <paper-button id="blackTheme"><core-icon icon="invert-colors"></core-icon></paper-button>
 				  
@@ -109,7 +113,7 @@
 							<core-icon icon="expand-more" id="tabIcon"></core-icon-button>
 						</paper-button>
 					</div>
-					<core-collapse id="collapse" opened?="{{ind==0}}">
+					<core-collapse id="collapse" opened?="{{ind==0 || project.issue[0].custom}}">
 						<table>
 							<thead>
 								<tr>
@@ -159,6 +163,57 @@
 			</div>
 		  </div>
 	</core-drawer-panel>
+	
+	
+	<!--CUSTOM TASK DIALOG -->
+	<paper-action-dialog transition="core-transition-center" id="addDialog" autoCloseDisabled backdrop heading="Add Timer">
+	  <core-item label="Project" class="taskProject">
+		<div flex></div>
+		<div class="itemContent"></div>
+	  </core-item>
+	  <core-item label="Issue" class="taskIssue">
+		<div flex></div>
+		<div class="itemContent"></div>
+	  </core-item>
+	  <core-item label="Priority" class="taskPriority">
+		<div flex></div>
+		<div class="itemContent"></div>
+	  </core-item>
+	  <core-item label="Status" class="taskStatus">
+			<div flex></div>
+			<div class="itemContent">
+				<select name="" id="taskDetailStatus"></select>
+			</div>
+	  </core-item>
+	   <core-item label="Assignee" class="taskAssignee">
+			<div flex></div>
+			<div class="itemContent">
+				<select name="" id="taskDetailAssignee"></select>
+			</div>
+	  </core-item>
+	   <core-item label="Date" class="taskDate">
+			<div flex></div>
+			<div class="itemContent">
+				<span class="textToday">Today</span>
+				<span hidden><input type="text" id="logDate" /></span>
+				
+			</div>
+			
+				<core-icon-button icon="today" id="datepicker-button" ></core-icon-button>
+			
+	  </core-item>
+	   <core-item label="Comment" class="taskComment">
+			
+			<div class="itemContent" flex>
+				<textarea name="" id="taskComment"></textarea>
+			</div>
+	  </core-item>
+	 
+	  <paper-button dismissive>Cancel</paper-button>
+	  
+	  <paper-button affirmative id="taskSubmit">Submit</paper-button>
+	</paper-action-dialog>
+	
 	<link rel="stylesheet" href="task-table.css" shim-shadowdom/>
 	 </template>
  
@@ -192,7 +247,6 @@
 			
 			this.projectAssignees = projectAssignees;
 			this.finalArray = finalArray;
-			
 			this.detailTask = [];
 			this.allStatus = allArrStatus;
 			this.currInd = 0;
@@ -326,6 +380,52 @@
 			this.finalArray = finalArray;
 			this.filterActive = false;
 		},
+		addTaskTimer : function(e,detail,sender){
+			var customInd = -1;
+			for (var i=0;i<finalArray.length;i++){
+				if (finalArray[i].name==="Added by user"){
+					customInd = i;
+				}
+			}
+			if (customInd===-1){
+				this.finalArray.push({issue:[],name:"Added by user"});
+				customInd = this.finalArray.length-1;
+			}
+			
+			
+			var filterID = parseInt(this.filterID);
+			if (!filterID>0){
+				this.fire("invalidTaskNum",{});
+				return false;
+			} else {
+				var rAssign = finalArray[finalArray.length-2].issue[0].assigned_to;
+				var customTask = {
+					custom : true,
+					assigned_to : {
+						id: rAssign.id,
+						nanem: rAssign.name
+						
+					},
+					id: filterID,
+					priority: {
+						id:5,
+						name: "Immediate"
+					},
+					status: {
+						id:1,
+						name: "New"
+					},
+					subject: "☕ Work ☕",
+					project: {
+						id: 0,
+						name: "Added by user"
+					}
+					
+				};
+				
+				finalArray[customInd].issue.push(customTask);
+			}
+		},
 		submitTask: function(e,detail,sender){
 			
 			//this.detailTask.clockObj.reset();
@@ -384,20 +484,23 @@
 			
 			
 			//Update task
-			var r = new XMLHttpRequest();
+			if (!this.detailTask.custom){
+				var r = new XMLHttpRequest();
 			
-			r.open("PUT", apiURL + 'issues/'+this.detailTask.id+'.json?key='+ userKey, true);
-			r.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			r.onreadystatechange = function () {
-			  if (r.readyState != 4 || r.status != 200) return;
-			  this.fire("taskupdate",{msg:updateMsg});
-			  this.$.taskDrawer.closeDrawer();
-			  sender.disabled=false;
-			  sender.textContent = "Submit";
-			  this.detailTask.rowObj.querySelector("td.prio + td").textContent=drawer.querySelector("#taskDetailStatus option[value='"+status+"']").textContent;
-			  this.detailTask.clockObj.reset();
-			}.bind(this);
-			r.send(queryTask);
+				r.open("PUT", apiURL + 'issues/'+this.detailTask.id+'.json?key='+ userKey, true);
+				r.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+				r.onreadystatechange = function () {
+				  if (r.readyState != 4 || r.status != 200) return;
+				  this.fire("taskupdate",{msg:updateMsg});
+				  this.$.taskDrawer.closeDrawer();
+				  sender.disabled=false;
+				  sender.textContent = "Submit";
+				  this.detailTask.rowObj.querySelector("td.prio + td").textContent=drawer.querySelector("#taskDetailStatus option[value='"+status+"']").textContent;
+				  this.detailTask.clockObj.reset();
+				}.bind(this);
+				r.send(queryTask);
+			
+			}
 			
 			
 			

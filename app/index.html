@@ -32,62 +32,12 @@
 	<task-table class=""></task-table>
 
 	<paper-toast id="toastTimerStarted" text="Timer Started!"></paper-toast>
-	<paper-toast id="toastInvalidTimeInput">
-		<core-icon icon="thumb-down" layout horizontal start-justified></core-icon>
+	<paper-toast id="toastMisc">
+		<core-icon icon="info" layout horizontal start-justified></core-icon>
 	</paper-toast>
 	
 	<paper-toast id="toastTaskSubmited" text="Task updated!" autoCloseDisabled></paper-toast>
 		
-		
-	
-	<paper-action-dialog transition="core-transition-center" id="dialog" autoCloseDisabled backdrop heading="Task Details">
-	  <core-item label="Project" class="taskProject">
-		<div flex></div>
-		<div class="itemContent"></div>
-	  </core-item>
-	  <core-item label="Issue" class="taskIssue">
-		<div flex></div>
-		<div class="itemContent"></div>
-	  </core-item>
-	  <core-item label="Priority" class="taskPriority">
-		<div flex></div>
-		<div class="itemContent"></div>
-	  </core-item>
-	  <core-item label="Status" class="taskStatus">
-			<div flex></div>
-			<div class="itemContent">
-				<select name="" id="taskDetailStatus"></select>
-			</div>
-	  </core-item>
-	   <core-item label="Assignee" class="taskAssignee">
-			<div flex></div>
-			<div class="itemContent">
-				<select name="" id="taskDetailAssignee"></select>
-			</div>
-	  </core-item>
-	   <core-item label="Date" class="taskDate">
-			<div flex></div>
-			<div class="itemContent">
-				<span class="textToday">Today</span>
-				<span hidden><input type="text" id="logDate" /></span>
-				
-			</div>
-			
-				<core-icon-button icon="today" id="datepicker-button" ></core-icon-button>
-			
-	  </core-item>
-	   <core-item label="Comment" class="taskComment">
-			
-			<div class="itemContent" flex>
-				<textarea name="" id="taskComment"></textarea>
-			</div>
-	  </core-item>
-	 
-	  <paper-button dismissive>Cancel</paper-button>
-	  
-	  <paper-button affirmative id="taskSubmit">Submit</paper-button>
-	</paper-action-dialog>
-
 
     <!-- build:js scripts/app.js -->
 	

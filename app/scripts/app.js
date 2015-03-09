@@ -49,8 +49,10 @@
         return (text + '').replace(/[<>&"'\/]/g, function(c) {
             return characters[c];
         });
-    }
-
+    
+	}
+	document.body.className = getCookie("bodyTheme");
+	
   document.addEventListener('polymer-ready', function () {
 	var query = function(sel){
 		return document.querySelector(sel);
@@ -58,6 +60,7 @@
 	var queryAll = function(sel){
 		return document.querySelectorAll(sel);
 	};
+	
 	//var realLinks = document.getElementsByTagName("task-table")[0].$.querySelectorAll("a");
 	// console.log(realLinks);
 	// for (var i=0;i<realLinks.length;i++){
@@ -107,12 +110,13 @@
 	
 	var taskDialog = document.getElementById("dialog");
 	
-	var bodyTheme = "";
 	
+	//document.body.classList.toggle("dark");
 	
 	query("task-table").$.blackTheme.addEventListener("click",function(e){
 		document.body.classList.toggle("dark");
-		query("task-table").classList.toggle("dark");
+		//query("task-table").classList.toggle("dark");
+		setCookie("bodyTheme",document.body.className,700);
 	});
 	
 	
@@ -126,12 +130,30 @@
 		}
 	});
 	
-	var invalidTimeToast = query("#toastInvalidTimeInput");
-	document.querySelector("task-table").addEventListener("invalid-time-input", function(msg){
+	var miscToast = query("#toastMisc");
+	/*document.querySelector("task-table").addEventListener("invalid-time-input", function(msg){
 		invalidTimeToast.text = msg.detail.msg;
 		invalidTimeToast.show();
 		
+	});*/
+	document.querySelector("task-table").addEventListener("setKey", function(msg){
+		miscToast.text = "Api key set! Refreshing page...";
+		miscToast.show();
+		setTimeout(function () { location.reload(true); }, 3000);
 	});
+	
+	document.querySelector("task-table").addEventListener("invalidTaskNum", function(msg){
+		miscToast.text = "Invalid task #";
+		miscToast.show();
+		
+	});
+	
+	document.querySelector("task-table").addEventListener("lostTaskNum", function(msg){
+		miscToast.text = "Task not found";
+		miscToast.show();
+		
+	});
+	
 	
 	/*query("task-table").$.taskDrawer.addEventListener("core-select", function(msg){
 		var main = query("#taskDrawer").$.main;
@@ -218,6 +240,12 @@
 	/*query("core-drawer-panel #datepicker-button").addEventListener("click", function(e){
 		
 	});*/
+	
+	query("task-table").addEventListener("taskupdate",function(e){
+		
+		successToast.text = e.detail.msg;
+		successToast.show();
+	});
 	
 	query("#dialog #taskSubmit").addEventListener("mousedown", function(e){
 	
