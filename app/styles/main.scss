@@ -7,7 +7,7 @@ body {
   margin:0;
 }
 
-input, select, textarea, option{
+input, select, textarea, option, task-table /deep/ *{
 	font-family: 'RobotoDraft', Helvetica, Arial, sans-serif;
 	font-size:12px;
 }
@@ -15,7 +15,7 @@ input, select, textarea, option{
 	/*padding:0 38px;*/
 }
 
-a{
+a, task-table /deep/ a{
 	color:#494949;
 }
 
@@ -27,20 +27,20 @@ a{
   padding: 0.2em 0;
 }
 
-.topBar{
+task-table /deep/ .topBar{
 	padding-left:38px;
 	padding-top:15px;
 	background-color:#e5e5e5;
-	core-field{
+	core-field::shadow{
 		font-size:12px;
 	}
-	core-field input{
+	core-field::shadow input{
 		height:25px;
 		background:#ffffff;
 		border:1px solid #555;
 		font-size:inherit;
 	}
-	core-field paper-button{
+	core-field::shadow paper-button{
 		background:#818181;
 		height:25px;
 		border-radius:0;
@@ -54,10 +54,10 @@ a{
 	}
 }
 
-.projectTab{
+task-table /deep/ .projectTab{
 	height:31px;
 }
-.projectTab paper-button{
+task-table /deep/ .projectTab paper-button{
 	width:100%;
 	background:#494949;
 	color:#ffffff;
@@ -71,25 +71,25 @@ a{
 	}
 }
 
-paper-button[affirmative]{
+task-table /deep/ paper-button[affirmative]{
 		background:#91DD1B;
 		color:#000000;
 	}
 
-paper-button{
+task-table /deep/ paper-button{
 	background:#818181;
 	height:25px;
 	border-radius:0;
 	color:#ffffff;
 	/*font-weight:bold;*/
 	/*text-transform:initial;*/
-	.button-content{
+	/deep/ .button-content{
 			box-sizing:border-box;
 			height:25px;
 		}
 }
 	
-	paper-button[disabled]{
+	task-table /deep/ paper-button[disabled]{
 		background: none repeat scroll 0% 0% #EAEAEA;
 		color: #A8A8A8;
 		cursor: auto;
@@ -111,15 +111,16 @@ paper-button{
 		width:100%;
 	}
 }
-core-drawer-panel{
+task-table /deep/ core-drawer-panel{
 	overflow-y:visible;
 }
-core-drawer-panel #drawer{
-	background:#ffffff;
-	div[drawer]{
+task-table /deep/ core-drawer-panel{
+	
+	/deep/ div[drawer]{
+		background:#ffffff;
 		padding-top:23px;
 	}
-	.panelTitle {
+	/deep/ .panelTitle {
 			height:auto;
 			color:inherit;
 			background:none;
@@ -135,20 +136,20 @@ core-drawer-panel #drawer{
 				box-sizing:initial;
 			}
 		}
-	core-item{
+	/deep/ core-item {
 		padding-left:10px;
 		padding-right:10px;
-		#label{
+		/deep/ #label{
 			width:75px;
 		}
 		&.noLabel{
-			#label{
+			/deep/ #label{
 				display:none;
 			}
 		}
 		
 		
-		.itemContent{
+		/deep/ .itemContent{
 			width:165px;
 			overflow:hidden;
 			text-overflow:ellipsis;
@@ -167,25 +168,25 @@ core-drawer-panel #drawer{
 				width:120px;display:inline-block;
 			}
 		}
-		&.taskDate{
+		&.taskDate /deep/{
 			#datepickerbutton{
 				display:inline-block;
 			}
 		}
-		&.taskComment{
+		&.taskComment /deep/{
 			align-items:flex-start;
 			.itemContent{
 				margin-top:10px;
 				width:100%;
 			}
 		}
-		&.taskActions{
+		&.taskActions /deep/{
 			margin-top:40px;
 		}
 	}
 }
 
-div#scrim, core-drawer-panel div#drawer{
+task-table /deep/ div#scrim, task-table /deep/ core-drawer-panel div#drawer{
 	position:fixed;
 }
 
@@ -193,25 +194,27 @@ div#scrim, core-drawer-panel div#drawer{
 
 $darkFontColor: #eeeeee;
 
-body.dark {
+body.dark{
 	background:#222222;
 	color:$darkFontColor;
-	a{
+	a, /deep/ a{
 		color:$darkFontColor;
 	}
-	.topBar{
+	/deep/ .topBar{
 		background: #999999;
 		core-field paper-button{
 			background: #555555;
 		}
 	}
 	
-	core-drawer-panel #drawer{
+	/deep/ core-drawer-panel /deep/ div[drawer]{
 	background:#333;
 	
 }
 	
 }
+
+
 
 
 

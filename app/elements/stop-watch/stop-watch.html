@@ -2,7 +2,7 @@
 
 <polymer-element name="stop-watch" attributes="startTS endTS buffer indexRow">
   <template>
-    <link rel="stylesheet" href="stop-watch.css">
+    
 	<paper-button id="play" class="play" on-click="{{handleTimer}}" disabled?={{running}}>Play</paper-button>
 	<paper-button id="stop" class="stop" on-click="{{handleTimer}}" disabled?={{!running}}>Stop</paper-button>
 	<div class="time">
@@ -16,7 +16,7 @@
 		 
 		</core-field>
 	</div>
-	
+	<link rel="stylesheet" href="stop-watch.css" shim-shadowdom />
   </template>
   <script>
     (function () {

@@ -14,8 +14,9 @@ $darkPriorities : #000000;
 
 :host {
   display: block;
+  background:red;
 }
-table{
+table {
 	margin-top:10px;
 	width:100%;
 	border-collapse:collapse;
@@ -116,45 +117,45 @@ table{
 }
 #paper1, #paper2{
 		padding:0;
-		#underline{
+		/deep/ #underline{
 			top:2px;
 			.unfocused-underline{
 				background: transparent;
 			}
 		}
 		/*Priorities*/
-				&.low{
+				&.low /deep/ {
 					.focused-underline{
 						background: $low;
 					}
 					
 				}
-				&.normal{
+				&.normal /deep/ {
 					.focused-underline{
 						background: $normal;
 					}
 				}
-				&.high{
+				&.high /deep/ {
 					.focused-underline{
 						background: $high;
 					}
 				}
-				&.immediate{
+				&.immediate /deep/ {
 					.focused-underline{
 						background: $immediate;
 						color:#ffffff;
 					}
 				}
-				&.hold{
+				&.hold /deep/ {
 					.focused-underline{
 						background: $hold;
 					}
 				}
 	}
 /*Dark theme*/
-.dark{
-/*:host-context(.dark) { */
-	table{
+
+:host-context(.dark) {
+	/deep/ table{
 		td{
 			border-bottom-color: $darkRowBorders;
 			&.prio div{
@@ -257,3 +258,4 @@ table{
 		padding-left:5px;
 	}
 }
+

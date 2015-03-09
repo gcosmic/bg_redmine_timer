@@ -19,7 +19,7 @@ paper-button{
 	box-sizing:border-box;
 	min-width:0;
 }
-paper-button .button-content{
+paper-button /deep/ .button-content{
 	width:50px;
 	height:31px;
 	padding-top:6px;
@@ -43,11 +43,11 @@ div.time{
 	line-height:31px;
 }
 
-core-field{
+core-field /deep/{
 		font-size:12px;
 		margin-top:2px;
 	}
-	core-field input{
+	core-field /deep/ input{
 		height:25px;
 		background:#ffffff;
 		border:1px solid #555;

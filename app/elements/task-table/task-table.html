@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <polymer-element name="task-table" id="taskTable" attributes="">
-	<link rel="stylesheet" href="task-table.css">
+	
   <template>
 		
 		<core-drawer-panel rightDrawer forceNarrow id="taskDrawer" disableSwipe disableEdgeSwipe drawerWidth="326px" disablePanelClose >
@@ -152,8 +152,9 @@
 			</div>
 		  </div>
 	</core-drawer-panel>
+	<link rel="stylesheet" href="task-table.css" shim-shadowdom />
 	 </template>
- 
+	
   <script>
     (function () {
 		function toggleToday(){
